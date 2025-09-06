@@ -1,0 +1,3 @@
+[submodule "libC"]
+	path = libC
+	url = https://github.com/elieLeE/libC.git
