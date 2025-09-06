@@ -2,5 +2,7 @@
 
 int main()
 {
+    test_melange_jeu();
+
     return 0;
 }
