@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "../../defines.h"
+#include "../defines.h"
 #include "gestion_jeu_carte.h"
 
 void melange_jeu(carte_t jeu[])

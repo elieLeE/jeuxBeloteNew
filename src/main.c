@@ -3,8 +3,8 @@
 #include <time.h>
 
 #include "defines.h"
-#include "core/gestion_cartes/carte.h"
-#include "core/gestion_cartes/gestion_jeu_carte.h"
+#include "core/carte.h"
+#include "core/gestion_jeu_carte.h"
 
 int main()
 {
