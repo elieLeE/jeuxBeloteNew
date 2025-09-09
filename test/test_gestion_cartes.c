@@ -2,8 +2,8 @@
 
 #include "test_gestion_cartes.h"
 #include "../src/defines.h"
-#include "../src/core/gestion_cartes/carte.h"
-#include "../src/core/gestion_cartes/gestion_jeu_carte.h"
+#include "../src/core/carte.h"
+#include "../src/core/gestion_jeu_carte.h"
 
 static bool is_same_card(carte_t *c1, carte_t *c2)
 {
