@@ -5,6 +5,7 @@
 #include "defines.h"
 #include "core/carte.h"
 #include "core/gestion_jeu_carte.h"
+#include "core/gestion_partie.h"
 
 int main()
 {
@@ -14,7 +15,12 @@ int main()
 
     printf("jeu belote\n");
 
-    melange_jeu(jeu);
+    if (melange_jeu(jeu) < 0) {
+        fprintf(stderr, "error when trying to mix the cards. "
+                "The game can not be started");
+    }
+
+     demarrage_nvelle_partie(jeu);
 
     return 0;
 }

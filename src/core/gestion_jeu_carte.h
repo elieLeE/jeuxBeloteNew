@@ -3,6 +3,6 @@
 
 #include "carte.h"
 
-void melange_jeu(carte_t jeu[]);
+int melange_jeu(carte_t jeu[]);
 
 #endif
