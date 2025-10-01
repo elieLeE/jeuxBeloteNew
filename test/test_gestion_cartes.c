@@ -14,17 +14,17 @@ static bool are_same_cards(carte_t *c1, carte_t *c2)
     return ARE_SAME_STRUCT(c1, c2);
 }
 
-static bool search_jeu_carte(carte_t *jeu, carte_t *c)
+static int get_card_idx(carte_t *jeu, carte_t *c)
 {
     for (int i = 0; i < NBRE_CARTES; i++) {
         if (are_same_cards(&jeu[i], c)) {
-            return true;
+            return i;
         }
     }
-    return false;
+    return -1;
 }
 
-static bool verif_jeu_carte(carte_t jeu[])
+static void verif_jeu_carte(carte_t jeu[])
 {
     rang_t r;
     couleur_t c;
@@ -36,12 +36,9 @@ static bool verif_jeu_carte(carte_t jeu[])
         for (r = SEPT; r <= AS; r++) {
             tmp.r = r;
 
-            if (!search_jeu_carte(jeu, &test_carte)) {
-                return false;
-            }
+            assert (get_card_idx(jeu, &tmp) >= 0);
         }
     }
-    return true;
 }
 
 void test_melange_jeu(void)
@@ -50,7 +47,7 @@ void test_melange_jeu(void)
 
     melange_jeu(jeu);
 
-    assert(verif_jeu_carte(jeu));
+    verif_jeu_carte(jeu);
 
     printf("melange_jeu OK\n");
 }
