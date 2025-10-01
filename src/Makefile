@@ -8,7 +8,7 @@
 #$* : nom du fichier sans le suffixe
 
 CC=gcc
-CFLAGS=-std=c99 -Wextra -Wall# -ansi -pedantic
+CFLAGS=-std=c2x -Wextra -Wall# -ansi -pedantic
 LDFLAGS=
 EXEC=prog
 SRC= $(wildcard *.c */*.c ../libC/src/*.c ../libC/src/*/*.c)
