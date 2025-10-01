@@ -4,5 +4,6 @@
 #include "carte.h"
 
 int melange_jeu(carte_t jeu[]);
+void coupe_jeu(carte_t jeu[]);
 
 #endif

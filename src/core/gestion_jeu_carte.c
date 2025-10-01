@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "assert.h"
 
@@ -57,3 +58,22 @@ int melange_jeu(carte_t jeu[])
 
     return 0;
 }
+
+void coupe_jeu(carte_t jeu[])
+{
+    int idx;
+    carte_t copie_jeu[NBRE_CARTES];
+    size_t carte_sizeof;
+
+    /* At least one card but at max 30 card in the cut.
+     * 'rand () % (NBRE_CARTES - 2)' is between 0 and 29 (no 30 because % N
+     * returns a result < N).
+     * So, 'rand() % (NBRE_CARTES - 2) + 1' is between 1 and 30 */
+    idx = rand() % (NBRE_CARTES - 2) + 1;
+    carte_sizeof = sizeof(carte_t);
+
+    memcpy(copie_jeu, jeu, carte_sizeof * NBRE_CARTES);
+    memcpy(jeu, &copie_jeu[idx], carte_sizeof * (NBRE_CARTES - idx));
+    memcpy(&jeu[NBRE_CARTES - idx], &copie_jeu, carte_sizeof * idx);
+}
+
