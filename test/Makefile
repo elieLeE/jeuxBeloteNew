@@ -11,7 +11,8 @@ CC=gcc
 CFLAGS=-std=c99 -Wextra -Wall# -ansi -pedantic
 LDFLAGS=
 EXEC=test
-SRC= $(wildcard *.c */*.c ../libC/src/*.c ../libC/src/*/*.c ../src/core/*.c ../src/*/*.c ../src/*/*/*.c)
+LIB_C=../../libC/src
+SRC= $(wildcard *.c */*.c ../src/core/*.c ../src/*/*.c ../src/*/*/*.c)
 OBJ= $(SRC:.c=.o)
 
 all: $(EXEC) clean
