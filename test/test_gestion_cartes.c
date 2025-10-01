@@ -51,3 +51,31 @@ void test_melange_jeu(void)
 
     printf("melange_jeu OK\n");
 }
+
+void test_coupe_jeu()
+{
+    int idx_coupe = -1;
+
+    carte_t jeu[NBRE_CARTES];
+    carte_t jeu2[NBRE_CARTES];
+
+    melange_jeu(jeu);
+    verif_jeu_carte(jeu);
+
+    memcpy(jeu2, jeu, sizeof(jeu2));
+
+    coupe_jeu(jeu2);
+
+    idx_coupe = get_card_idx(jeu2, &jeu[0]);
+    assert(idx_coupe > 0 && idx_coupe < NBRE_CARTES -1);
+
+    for (int i = 1, j = idx_coupe + 1; j != idx_coupe; )
+    {
+        assert (are_same_cards(&jeu[i], &jeu2[j]));
+
+        i = (i + 1) % NBRE_CARTES;
+        j = (j + 1) % NBRE_CARTES;
+    }
+
+    printf("coupe_jeu OK\n");
+}
