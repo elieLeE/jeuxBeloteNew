@@ -1,4 +1,8 @@
+#include <string.h>
+
 #include "assert.h"
+
+#include "../libC/src/macros.h"
 
 #include "test_gestion_cartes.h"
 #include "../src/defines.h"
@@ -7,7 +11,7 @@
 
 static bool is_same_card(carte_t *c1, carte_t *c2)
 {
-    return (c1->c == c2->c) && (c1->r == c2->r);
+    return ARE_SAME_STRUCT(c1, c2);
 }
 
 static bool search_jeu_carte(carte_t *jeu, carte_t *c)
