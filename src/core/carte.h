@@ -25,7 +25,6 @@ typedef enum couleur_t {
 typedef struct carte_t {
     rang_t r;
     couleur_t c;
-    bool est_atout;
 } carte_t;
 
 #endif
