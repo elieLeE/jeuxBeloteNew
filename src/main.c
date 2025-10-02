@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "../../libC/src/logger/logger.h"
+
 #include "defines.h"
 #include "core/carte.h"
 #include "core/gestion_jeu_carte.h"
-#include "core/gestion_partie.h"
 
 int main()
 {
@@ -13,14 +14,12 @@ int main()
 
     srand(time(NULL));
 
-    printf("jeu belote\n");
+    logger_info("starting belote game\n");
 
     if (melange_jeu(jeu) < 0) {
-        fprintf(stderr, "error when trying to mix the cards. "
-                "The game can not be started");
+        logger_error("error when trying to mix the cards. "
+                     "The game can not be started");
     }
-
-     demarrage_nvelle_partie(jeu);
 
     return 0;
 }

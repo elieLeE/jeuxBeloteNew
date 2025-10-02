@@ -3,6 +3,8 @@
 
 #include "assert.h"
 
+#include "../../libC/src/logger/logger.h"
+
 #include "../defines.h"
 #include "gestion_jeu_carte.h"
 
@@ -39,9 +41,7 @@ int melange_jeu(carte_t jeu[])
                     idx_carte--;
 
                     if (idx_carte < 0) {
-                        fprintf(stderr, "index got is invalid");
-                        assert(false);
-
+                        logger_error("index %d got is invalid", idx_carte);
                         return -1;
                     }
                 }
