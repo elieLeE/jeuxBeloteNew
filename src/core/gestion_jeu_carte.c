@@ -13,8 +13,8 @@ int melange_jeu(carte_t jeu[])
     bool done[NBRE_CARTES] = {false};
     unsigned int count = 0;
 
-    for(couleur_t i=0; i<NBRE_COUL; i++) {
-        for(rang_t j=SEPT; j<=AS; j++) {
+    for (couleur_t i = 0; i < NBRE_COUL; i++) {
+        for (rang_t j = SEPT; j <= AS; j++) {
             unsigned int p;
             int idx_carte;
 
@@ -31,13 +31,13 @@ int melange_jeu(carte_t jeu[])
                  * the biggest one in order to limit the investigation time. */
                 idx_carte = NBRE_CARTES -1;
 
-                while(p != 0) {
+                while (p != 0) {
                     if (!done[idx_carte]) {
                         p--;
                     }
                     idx_carte--;
                 }
-                while(done[idx_carte]) {
+                while (done[idx_carte]) {
                     idx_carte--;
 
                     if (idx_carte < 0) {
