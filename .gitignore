@@ -6,3 +6,6 @@ prog
 !test_
 /test/test
 *~
+
+# gdb
+*\.gdb_history
