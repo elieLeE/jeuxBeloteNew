@@ -9,4 +9,6 @@ typedef struct player_t {
     bool is_human;
 } player_t;
 
+void free_player_cards(player_t *player);
+
 #endif
