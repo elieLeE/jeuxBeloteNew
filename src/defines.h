@@ -8,4 +8,6 @@
 #define NBRE_COUL 4
 #define NBRE_CARTES_BY_COUL 8
 
+#define NBRE_JOUEURS 4
+
 #endif

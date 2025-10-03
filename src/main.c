@@ -7,6 +7,7 @@
 #include "defines.h"
 #include "core/carte.h"
 #include "core/gestion_jeu_carte.h"
+#include "core/gestion_partie.h"
 
 int main()
 {
@@ -20,6 +21,8 @@ int main()
         logger_error("error when trying to mix the cards. "
                      "The game can not be started");
     }
+
+     start_new_game(jeu);
 
     return 0;
 }
