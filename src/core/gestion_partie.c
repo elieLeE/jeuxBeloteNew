@@ -159,6 +159,8 @@ void start_new_game(carte_t game[])
 
     memset(players, 0, sizeof(players));
 
+    players[0].is_human = true;
+
     start_new_ronud(game, players, 0);
 }
 
