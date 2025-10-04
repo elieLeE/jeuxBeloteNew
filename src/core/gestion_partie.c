@@ -40,11 +40,12 @@ partial_split_cards(carte_t game[], player_t players[NBRE_JOUEURS],
  *  0  => the card has been taken
  *  -1 => the card has been taken by no player
  */
-static int chose_trmup_color(player_t players[NBRE_JOUEURS], int first_player,
-                             carte_t *card, trump_color_turn_t turn,
-                             couleur_t *trump_color, int *idx_player_taking)
+static int
+chose_trmup_color(player_t players[NBRE_JOUEURS], int idx_first_player,
+                  carte_t *card, trump_color_turn_t turn,
+                  couleur_t *trump_color, int *idx_player_taking)
 {
-    int idx_player = first_player;
+    int idx_player = idx_first_player;
 
     do {
         if (does_player_take_card(&(players[idx_player]), card, turn,
@@ -59,28 +60,28 @@ static int chose_trmup_color(player_t players[NBRE_JOUEURS], int first_player,
         }
 
         idx_player = (idx_player + 1) % NBRE_JOUEURS;
-    } while (idx_player != first_player);
+    } while (idx_player != idx_first_player);
 
     return -1;
 }
 
 static int
 all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
-                int first_player, couleur_t *trump_color,
+                int idx_first_player, couleur_t *trump_color,
                 int *idx_player_taking)
 {
     carte_t *trump_card;
 
     logger_info("first cards splitting");
 
-    partial_split_cards(game, players, first_player, 2);
-    partial_split_cards(&(game[8]), players, first_player, 3);
+    partial_split_cards(game, players, idx_first_player, 2);
+    partial_split_cards(&(game[8]), players, idx_first_player, 3);
 
     trump_card = &(game[20]);
-    if (chose_trmup_color(players, first_player, trump_card, TURN_1,
+    if (chose_trmup_color(players, idx_first_player, trump_card, TURN_1,
                           trump_color, idx_player_taking) == -1)
     {
-        RETHROW(chose_trmup_color(players, first_player, trump_card,
+        RETHROW(chose_trmup_color(players, idx_first_player, trump_card,
                                   TURN_2, trump_color, idx_player_taking));
     }
 
@@ -98,13 +99,12 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
 /* {{{ Round */
 
 /* handling a new round:
- * - split the cards
- * - determine the trump
+ * - split the cards (the determining of the trump is done inside)
  * - do the trick
  * - increment the points won by each player
  */
 void start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
-                     int first_player)
+                     int idx_first_player)
 {
     couleur_t trump_color = -1;
     int idx_player_taking = -1;
@@ -112,7 +112,7 @@ void start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
     logger_info("coupe du game\n");
     coupe_jeu(game);
 
-    if (all_split_cards(game, players, first_player, &trump_color,
+    if (all_split_cards(game, players, idx_first_player, &trump_color,
                         &idx_player_taking) == 0)
     {
     }
