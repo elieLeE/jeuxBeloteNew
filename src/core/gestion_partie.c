@@ -85,7 +85,7 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
                           trump_color, idx_player_taking) == -1)
     {
         RETHROW(chose_trmup_color(players, first_player, trump_card,
-                                  TURN_1, trump_color, idx_player_taking));
+                                  TURN_2, trump_color, idx_player_taking));
     }
 
     if (*trump_color < CARREAU || *trump_color > TREFLE) {
