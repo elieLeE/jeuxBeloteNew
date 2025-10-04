@@ -10,4 +10,10 @@
 
 #define NBRE_JOUEURS 4
 
+typedef enum trump_color_turn_t {
+    TURN_1,
+    TURN_2,
+} trump_color_turn_t;
+;
+
 #endif

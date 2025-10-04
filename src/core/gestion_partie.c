@@ -12,7 +12,6 @@
 #include "gestion_jeu_carte.h"
 #include "players.h"
 
-
 /* {{{ Splitting cards */
 
 static void
@@ -37,15 +36,65 @@ partial_split_cards(carte_t game[], player_t players[NBRE_JOUEURS],
     } while (idx_joueur != first_player);
 }
 
+/* Method letting us determin the trump.
+ * It will "ask" to every player, on eventually two turns if they want to take
+ * the card and on which color.
+ *
+ * return:
+ *  0  => the card has been taken
+ *  -1 => the card has been taken by no player
+ */
+static int chose_trmup_color(player_t players[NBRE_JOUEURS], int first_player,
+                             carte_t *card, trump_color_turn_t turn,
+                             couleur_t *trump_color, int *idx_player_taking)
+{
+    int idx_player = first_player;
+
+    do {
+        if (does_player_take_card(&(players[idx_player]), card, turn,
+                                  trump_color))
+        {
+            *idx_player_taking = idx_player;
+
+            if (turn == TURN_1) {
+                *trump_color = card->c;
+            }
+            return 0;
+        }
+
+        idx_player = (idx_player + 1) % NBRE_JOUEURS;
+    } while (idx_player != first_player);
+
+    return -1;
+}
+
 static int
 all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
-                int first_player)
+                int first_player, couleur_t *trump_color,
+                int *idx_player_taking)
 {
+    carte_t *trump_card;
+
     logger_info("first cards splitting");
 
     partial_split_cards(game, players, first_player, 2);
     partial_split_cards(&(game[8]), players, first_player, 3);
 
+    trump_card = &(game[20]);
+    if (chose_trmup_color(players, first_player, trump_card, TURN_1,
+                          trump_color, idx_player_taking) == -1)
+    {
+        RETHROW(chose_trmup_color(players, first_player, trump_card,
+                                  TURN_1, trump_color, idx_player_taking));
+    }
+
+    if (*trump_color < CARREAU || *trump_color > TREFLE) {
+        logger_fatal("the color chosen has unknown value");
+    }
+    if (*idx_player_taking < 0 || *idx_player_taking >= NBRE_JOUEURS) {
+        logger_fatal("the index of the player that has taken the card is "
+                     "wrong");
+    }
     return 0;
 }
 
@@ -61,10 +110,16 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
 void start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
                      int first_player)
 {
+    couleur_t trump_color = -1;
+    int idx_player_taking = -1;
+
     logger_info("coupe du game\n");
     coupe_jeu(game);
 
-    all_split_cards(game, players, first_player);
+    if (all_split_cards(game, players, first_player, &trump_color,
+                        &idx_player_taking) == 0)
+    {
+    }
 
     for (int i = 0; i < NBRE_JOUEURS; i++) {
         free_player_cards(&(players[i]));
