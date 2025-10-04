@@ -1,6 +1,8 @@
 #include "../../libC/src/liste/liste.h"
 
 #include "players.h"
+#include "carte.h"
+
 
 void free_player_cards(player_t *player)
 {
@@ -33,4 +35,13 @@ bool does_player_take_card(player_t *player, carte_t *card,
     } else {
         return does_virtual_player_take_card(player, card, turn, color_chosen);
     }
+}
+
+void add_card_to_player(player_t *player, carte_t *card)
+{
+    generic_liste_t *list_cards;
+
+    list_cards = &(player->cards[card->c]);
+    gl_add_elem_first(list_cards, card);
+
 }

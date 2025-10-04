@@ -16,24 +16,20 @@
 
 static void
 partial_split_cards(carte_t game[], player_t players[NBRE_JOUEURS],
-                    int first_player, int card_counter)
+                    int idx_first_player, int card_counter)
 {
     int idx_card = 0;
-    int idx_joueur = first_player;
+    int idx_player = idx_first_player;
 
     do {
+        player_t *player = &(players[idx_player]);
+
         for (int i = 0; i < card_counter; i++) {
-            carte_t *card;
-            generic_liste_t *list_cards;
-
-            card = &(game[idx_card]);
-            list_cards = &(players[idx_joueur].cards[card->c]);
-            gl_add_elem_first(list_cards, card);
-
+            add_card_to_player(player, &(game[idx_card]));
             idx_card++;
         }
-        idx_joueur = (idx_joueur + 1) % NBRE_JOUEURS;
-    } while (idx_joueur != first_player);
+        idx_player = (idx_player + 1) % NBRE_JOUEURS;
+    } while (idx_player != idx_first_player);
 }
 
 /* Method letting us determin the trump.
