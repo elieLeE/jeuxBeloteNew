@@ -32,6 +32,25 @@ partial_split_cards(carte_t game[], player_t players[NBRE_JOUEURS],
     } while (idx_player != idx_first_player);
 }
 
+static void
+final_split_cards(carte_t game[], player_t players[NBRE_JOUEURS],
+                  int idx_first_player, int idx_player_taking)
+{
+    int idx_card = 0;
+    int idx_player = idx_first_player;
+
+    add_card_to_player(&(players[idx_player_taking]), &game[0]);
+    do {
+        int card_counter = (idx_player == idx_player_taking) ? 2 : 3;
+        player_t *player = &(players[idx_player]);
+
+        for (int i = 0; i < card_counter; i++) {
+            add_card_to_player(player, &(game[idx_card]));
+            idx_card++;
+        }
+        idx_player = (idx_player + 1) % NBRE_JOUEURS;
+    } while (idx_player != idx_first_player);
+}
 
 typedef enum trump_color_turn_t {
     TURN_1,
@@ -116,6 +135,11 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
                      "wrong");
     }
     logger_info("the color of the trump is %s", name_coul(*trump_color));
+
+    final_split_cards(&(game[20]), players, idx_first_player,
+                      *idx_player_taking);
+
+    logger_info("all the cards have been well split");
 
     return 0;
 }
