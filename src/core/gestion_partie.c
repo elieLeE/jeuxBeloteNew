@@ -32,6 +32,12 @@ partial_split_cards(carte_t game[], player_t players[NBRE_JOUEURS],
     } while (idx_player != idx_first_player);
 }
 
+
+typedef enum trump_color_turn_t {
+    TURN_1,
+    TURN_2,
+} trump_color_turn_t;
+
 /* Method letting us determin the trump.
  * It will "ask" to every player, on eventually two turns if they want to take
  * the card and on which color.
@@ -48,9 +54,18 @@ chose_trmup_color(player_t players[NBRE_JOUEURS], int idx_first_player,
     int idx_player = idx_first_player;
 
     do {
-        if (does_player_take_card(&(players[idx_player]), card, turn,
-                                  trump_color))
-        {
+        bool has_card_been_taken = false;
+
+        if (turn == TURN_1) {
+            has_card_been_taken =
+                does_player_take_card_first_turn(&(players[idx_player]), card);
+        } else {
+            has_card_been_taken =
+                does_player_take_card_second_turn(&(players[idx_player]),
+                                                  card, trump_color);
+        }
+
+        if (has_card_been_taken) {
             *idx_player_taking = idx_player;
 
             if (turn == TURN_1) {

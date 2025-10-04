@@ -12,28 +12,56 @@ void free_player_cards(player_t *player)
 }
 
 static bool
-does_human_player_take_card(player_t *player, carte_t *card,
-                            trump_color_turn_t turn, couleur_t *color_chosen)
+does_human_player_take_card_first_turn(player_t *player, carte_t *card)
 {
     logger_error("does_human_player_take_card NOT YET IMPLEMENTED");
     return false;
 }
 
 static bool
-does_virtual_player_take_card(player_t *player, carte_t *card,
-                              trump_color_turn_t turn, couleur_t *color_chosen)
+does_human_player_take_card_second_turn(player_t *player, carte_t *card,
+                                        couleur_t *trump_color)
 {
-    logger_error("does_virtual_player_take_card NOT YET IMPLEMENTED");
+    logger_error("does_human_player_take_card_second_turn "
+                 "NOT YET IMPLEMENTED");
     return false;
 }
 
-bool does_player_take_card(player_t *player, carte_t *card,
-                           trump_color_turn_t turn, couleur_t *color_chosen)
+static bool
+does_virtual_player_take_card_first_turn(player_t *player, carte_t *card)
+{
+    logger_error("does_virtual_player_take_card_first_turn "
+                 "NOT YET IMPLEMENTED");
+    return false;
+}
+
+static bool
+does_virtual_player_take_card_second_turn(player_t *player, carte_t *card,
+                                          couleur_t *trump_color)
+{
+    logger_error("does_virtual_player_take_card_second_turn "
+                 "NOT YET IMPLEMENTED");
+    return false;
+}
+
+bool does_player_take_card_first_turn(player_t *player, carte_t *card)
 {
     if (player->is_human) {
-        return does_human_player_take_card(player, card, turn, color_chosen);
+        return does_human_player_take_card_first_turn(player, card);
     } else {
-        return does_virtual_player_take_card(player, card, turn, color_chosen);
+        return does_virtual_player_take_card_first_turn(player, card);
+    }
+}
+
+bool does_player_take_card_second_turn(player_t *player, carte_t *card,
+                                       couleur_t *trump_color)
+{
+    if (player->is_human) {
+        return does_human_player_take_card_second_turn(player, card,
+                                                       trump_color);
+    } else {
+        return does_virtual_player_take_card_second_turn(player, card,
+                                                         trump_color);
     }
 }
 
