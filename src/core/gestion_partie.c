@@ -71,6 +71,8 @@ chose_trmup_color(player_t players[NBRE_JOUEURS], int idx_first_player,
             if (turn == TURN_1) {
                 *trump_color = card->c;
             }
+            logger_info("the player %d has accepted the card on turn %d",
+                        idx_player, turn + 1);
             return 0;
         }
 
@@ -93,9 +95,15 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
     partial_split_cards(&(game[8]), players, idx_first_player, 3);
 
     trump_card = &(game[20]);
+
+    logger_info("asking to the players players if they want the card '"
+                CARD_FMT "' - turn 1", CARD_FMT_ARG(trump_card));
+
     if (chose_trmup_color(players, idx_first_player, trump_card, TURN_1,
                           trump_color, idx_player_taking) == -1)
     {
+        logger_info("all players have refused the card on first turn - "
+                    "turn 2");
         RETHROW(chose_trmup_color(players, idx_first_player, trump_card,
                                   TURN_2, trump_color, idx_player_taking));
     }
@@ -107,6 +115,8 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
         logger_fatal("the index of the player that has taken the card is "
                      "wrong");
     }
+    logger_info("the color of the trump is %s", name_coul(*trump_color));
+
     return 0;
 }
 
@@ -130,6 +140,9 @@ void start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
     if (all_split_cards(game, players, idx_first_player, &trump_color,
                         &idx_player_taking) == 0)
     {
+    } else {
+        logger_info("none players has taken the card - "
+                    "this round is canceled");
     }
 
     for (int i = 0; i < NBRE_JOUEURS; i++) {
