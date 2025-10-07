@@ -9,13 +9,6 @@
 #include "../front/aff.h"
 
 
-void free_player_cards(player_t *player)
-{
-    for (int i = 0; i < NBRE_COUL; i++) {
-        gl_free(&(player->cards[i]), NULL);
-    }
-}
-
 /* {{{ Trump selection */
 /* {{{ Human player */
 
@@ -172,3 +165,11 @@ void add_card_to_player(player_t *player, carte_t *card)
     list_cards = &(player->cards[card->c]);
     gl_add_elem_first(list_cards, card);
 }
+
+void free_player_cards(player_t *player)
+{
+    for (int i = 0; i < NBRE_COUL; i++) {
+        gl_free(&(player->cards[i]), NULL);
+    }
+}
+
