@@ -14,6 +14,9 @@ void free_player_cards(player_t *player)
     }
 }
 
+/* {{{ Trump selection */
+/* {{{ Human player */
+
 static bool
 does_human_player_take_card_first_turn(const player_t *player,
                                        const carte_t *card)
@@ -101,11 +104,12 @@ does_player_take_card_second_turn(const player_t *player, const carte_t *card,
     }
 }
 
+/* }}} */
+
 void add_card_to_player(player_t *player, carte_t *card)
 {
     generic_liste_t *list_cards;
 
     list_cards = &(player->cards[card->c]);
     gl_add_elem_first(list_cards, card);
-
 }
