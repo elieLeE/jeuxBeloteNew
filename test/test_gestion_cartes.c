@@ -3,6 +3,7 @@
 #include "assert.h"
 
 #include "../libC/src/macros.h"
+#include "../libC/src/logger/logger.h"
 
 #include "test_gestion_cartes.h"
 #include "../src/defines.h"
@@ -49,7 +50,7 @@ void test_melange_jeu(void)
 
     verif_jeu_carte(jeu);
 
-    printf("melange_jeu OK\n");
+    logger_test_ok("melange_jeu");
 }
 
 void test_coupe_jeu()
@@ -77,5 +78,5 @@ void test_coupe_jeu()
         j = (j + 1) % NBRE_CARTES;
     }
 
-    printf("coupe_jeu OK\n");
+    logger_test_ok("coupe_jeu");
 }
