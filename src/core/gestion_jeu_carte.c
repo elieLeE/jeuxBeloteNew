@@ -29,7 +29,7 @@ int melange_jeu(carte_t jeu[])
                  * randomly are decreased, we can suppose that the first index
                  * to be filled will be the first ones, so, we start here by
                  * the biggest one in order to limit the investigation time. */
-                idx_carte = NBRE_CARTES -1;
+                idx_carte = NBRE_CARTES - 1;
 
                 while (p != 0) {
                     if (!done[idx_carte]) {
