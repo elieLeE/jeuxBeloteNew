@@ -23,26 +23,31 @@ static bool
 does_human_player_take_card_first_turn(const player_t *player,
                                        const carte_t *card)
 {
-    char answer;
+    printf("It is your turn to speak. Here are yours cards: \n");
+    display_player_cards(player);
 
-    printf("It is your turn to speak. Do you want to take the card '"
-           CARD_FMT "' ? (y/n)\n", CARD_FMT_ARG(card));
+    printf("\nDo you want to take the card '" CARD_FMT "' ? (y/n)\n",
+           CARD_FMT_ARG(card));
     printf("If you take it, the trump will be %s\n", name_coul(card->c));
     printf("Enter y/Y for yes and n/N for no\n");
 
     do {
-        answer = getchar();
+        char answer[3];
 
-        flush_stdin();
+        if (read_n_carac_and_flush(3, stdin, answer) == -1) {
+            continue;
+        }
 
-        switch (answer) {
-        case 'y':
-        case 'Y':
-            return true;
+        if (strlen(answer) == 1) {
+            switch (answer[0]) {
+            case 'y':
+            case 'Y':
+                return true;
 
-        case 'n':
-        case 'N':
-            return false;
+            case 'n':
+            case 'N':
+                return false;
+            }
         }
 
         printf("No understanding answer. Please respond with y/Y or n/N\n");
