@@ -15,7 +15,8 @@ void free_player_cards(player_t *player)
 }
 
 static bool
-does_human_player_take_card_first_turn(player_t *player, carte_t *card)
+does_human_player_take_card_first_turn(const player_t *player,
+                                       const carte_t *card)
 {
     char answer;
 
@@ -45,8 +46,9 @@ does_human_player_take_card_first_turn(player_t *player, carte_t *card)
     return false;
 }
 
-static bool
-does_human_player_take_card_second_turn(player_t *player, carte_t *card,
+bool
+does_human_player_take_card_second_turn(const player_t *player,
+                                        const carte_t *card,
                                         couleur_t *trump_color)
 {
     logger_error("does_human_player_take_card_second_turn "
@@ -54,24 +56,30 @@ does_human_player_take_card_second_turn(player_t *player, carte_t *card,
     return false;
 }
 
-static bool
-does_virtual_player_take_card_first_turn(player_t *player, carte_t *card)
+/* }}} */
+/* {{{ Virtual player */
+
+static bool does_virtual_player_take_card_first_turn(const player_t *player,
+                                                     const carte_t *card)
 {
     logger_error("does_virtual_player_take_card_first_turn "
                  "NOT YET IMPLEMENTED");
     return false;
 }
 
-static bool
-does_virtual_player_take_card_second_turn(player_t *player, carte_t *card,
-                                          couleur_t *trump_color)
+static bool does_virtual_player_take_card_second_turn(const player_t *player,
+                                                      const carte_t *card,
+                                                      couleur_t *trump_color)
 {
     logger_error("does_virtual_player_take_card_second_turn "
                  "NOT YET IMPLEMENTED");
     return false;
 }
 
-bool does_player_take_card_first_turn(player_t *player, carte_t *card)
+/* }}} */
+
+bool
+does_player_take_card_first_turn(const player_t *player, const carte_t *card)
 {
     if (player->is_human) {
         return does_human_player_take_card_first_turn(player, card);
@@ -80,8 +88,9 @@ bool does_player_take_card_first_turn(player_t *player, carte_t *card)
     }
 }
 
-bool does_player_take_card_second_turn(player_t *player, carte_t *card,
-                                       couleur_t *trump_color)
+bool
+does_player_take_card_second_turn(const player_t *player, const carte_t *card,
+                                  couleur_t *trump_color)
 {
     if (player->is_human) {
         return does_human_player_take_card_second_turn(player, card,

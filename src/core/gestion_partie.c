@@ -66,8 +66,8 @@ typedef enum trump_color_turn_t {
  *  -1 => the card has been taken by no player
  */
 static int
-chose_trmup_color(player_t players[NBRE_JOUEURS], int idx_first_player,
-                  carte_t *card, trump_color_turn_t turn,
+chose_trmup_color(const player_t players[NBRE_JOUEURS], int idx_first_player,
+                  const carte_t *card, trump_color_turn_t turn,
                   couleur_t *trump_color, int *idx_player_taking)
 {
     int idx_player = idx_first_player;
