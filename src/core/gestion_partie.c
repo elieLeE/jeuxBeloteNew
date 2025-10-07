@@ -4,8 +4,6 @@
 
 #include "../../libC/src/macros.h"
 #include "../../libC/src/logger/logger.h"
-#include "../../libC/libc.h"
-#include "../../libC/src/liste/liste.h"
 
 #include "../defines.h"
 #include "gestion_partie.h"
