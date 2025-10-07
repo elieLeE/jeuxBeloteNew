@@ -91,6 +91,9 @@ chose_trmup_color(const player_t players[NBRE_JOUEURS], int idx_first_player,
             logger_info("the player %d has accepted the card on turn %d",
                         idx_player, turn + 1);
             return 0;
+        } else {
+            logger_info("the player %d has refused the card on turn %d",
+                        idx_player, turn + 1);
         }
 
         idx_player = (idx_player + 1) % NBRE_JOUEURS;
