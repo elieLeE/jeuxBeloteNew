@@ -100,8 +100,6 @@ does_human_player_take_card_second_turn(const player_t *player,
         }
         upper_string(answer);
 
-        printf("answer: %s\n", answer);
-
         if (get_couleur_from_str(answer, &color_asked_by_player) == 0) {
             if (color_asked_by_player == card->c) {
                 printf("The color %s is not authorized on this turn\n",
