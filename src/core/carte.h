@@ -64,4 +64,6 @@ int get_value_card(const carte_t *card, couleur_t color_trump);
 #define CARD_FMT_ARG(_c) \
     name_rang(_c->r), name_coul(_c->c)
 
+int cmp_card(const void *_c1, const void *_c2);
+
 #endif
