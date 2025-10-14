@@ -9,6 +9,15 @@
 #include "../macros.h"
 
 typedef struct player_t {
+    int idx;
+    /* XXX: it could have been possible to use arrays here. But as the size
+     * will change constantly, list are very useful for that. Moreover, that
+     * lets me the opportunity to test, in a "real" situation my list generic
+     * library.
+     * And it is fun to play with my new generic list.
+     *
+     * Cards of the player:
+     * array of 4 lists of pointers of carte_t */
     generic_liste_t cards[NBRE_COUL];
     bool is_human;
 } player_t;
