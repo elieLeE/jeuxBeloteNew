@@ -49,6 +49,7 @@ int melange_jeu(carte_t jeu[])
 
             jeu[idx_carte].c = i;
             jeu[idx_carte].r = j;
+            jeu[idx_carte].is_trump = false;
 
             done[idx_carte] = true;
 

@@ -12,7 +12,7 @@
 
 static bool are_same_cards(carte_t *c1, carte_t *c2)
 {
-    return ARE_SAME_STRUCT(c1, c2);
+    return c1->r == c2->r && c1->c == c2->c;
 }
 
 static int get_card_idx(carte_t *jeu, carte_t *c)

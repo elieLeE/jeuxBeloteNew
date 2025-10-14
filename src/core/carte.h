@@ -29,6 +29,7 @@ typedef enum couleur_t {
 typedef struct carte_t {
     rang_t r;
     couleur_t c;
+    bool is_trump;
 } carte_t;
 
 inline static const char* name_rang(rang_t r)
