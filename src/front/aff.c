@@ -16,9 +16,10 @@ void display_player_cards(const player_t *player)
         const generic_liste_t *l = &(player->cards[i]);
 
         gl_for_each(elem, l->first) {
-            printf(CARD_FMT, CARD_FMT_ARG(((carte_t *)elem->data)));
+            printf(CARD_FMT ", ", CARD_FMT_ARG(((carte_t *)elem->data)));
         }
     }
+    printf("\n");
 }
 
 void display_players_cards(const player_t players[NBRE_JOUEURS])
