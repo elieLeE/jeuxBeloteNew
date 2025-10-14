@@ -58,6 +58,8 @@ inline static const char* name_coul(couleur_t c)
     return "";
 }
 
+int get_value_card(const carte_t *card, couleur_t color_trump);
+
 #define CARD_FMT "%s de %s"
 #define CARD_FMT_ARG(_c) \
     name_rang(_c->r), name_coul(_c->c)
