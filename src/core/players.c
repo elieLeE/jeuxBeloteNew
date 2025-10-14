@@ -3,11 +3,53 @@
 #include "../../libC/src/liste/liste.h"
 #include "../../libC/src/io/io.h"
 #include "../../libC/src/str/str.h"
+#include "../../libC/libc.h"
 
 #include "players.h"
 #include "carte.h"
 #include "../front/aff.h"
 
+
+static bool has_player_card(const generic_liste_t *cards, rang_t r)
+{
+    gl_for_each(elem, cards->first) {
+        carte_t *card = (carte_t *)(elem->data);
+
+        if (card->r == r) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/* return the number of points that a player has for a specific color,
+ * with this color the trump */
+static int
+get_sum_points_list_card(const generic_liste_t *cards, couleur_t trump_color)
+{
+    int sum = 0;
+    int belote_and_re = 0;
+
+    gl_for_each(elem, cards->first) {
+        carte_t *c = (carte_t *)elem->data;
+        int card_pt;
+
+        card_pt = get_value_card(c, trump_color);
+        sum += card_pt;
+
+        logger_info("card " CARD_FMT " => %d, total: %d",
+                    CARD_FMT_ARG(c), card_pt, sum);
+        if (c->r == ROI || c->r == DAME) {
+            belote_and_re++;
+        }
+    }
+
+    if (belote_and_re == 2) {
+        sum += 20;
+    }
+    return sum;
+}
 
 /* {{{ Trump selection */
 /* {{{ Human player */
@@ -113,6 +155,46 @@ does_human_player_take_card_second_turn(const player_t *player,
 
 /* }}} */
 /* {{{ Virtual player */
+
+__attr_unused__
+static void
+get_player_cards_value(const player_t *player, couleur_t trump_color,
+                       int *trump_color_pts, int *total_pts)
+{
+    const generic_liste_t *trump_cards = &(player->cards[trump_color]);
+
+    *trump_color_pts = get_sum_points_list_card(trump_cards, trump_color);
+
+    *total_pts = *trump_color_pts;
+    for (couleur_t i = CARREAU; i <= TREFLE; i++) {
+        if (i != trump_color) {
+            *total_pts +=
+                get_sum_points_list_card(&(player->cards[i]), trump_color);
+        }
+    }
+}
+
+__attr_unused__
+static bool
+should_player_take_with_color(const generic_liste_t *trump_cards_list,
+                            int trump_color_pts, int total_pts)
+{
+    bool has_valet;
+
+    has_valet = has_player_card(trump_cards_list, VALET);
+
+    if (has_valet) {
+        if (trump_cards_list->nbre_elem >= 3) {
+            return true;
+        }
+    }
+
+    if (trump_color_pts >= 34 && total_pts >= 50) {
+        return true;
+    }
+
+    return false;
+}
 
 static bool does_virtual_player_take_card_first_turn(const player_t *player,
                                                      const carte_t *card)
