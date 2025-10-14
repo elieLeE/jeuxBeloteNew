@@ -181,13 +181,22 @@ void start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
 /* }}} */
 /* {{{ Game */
 
+static void init_players(player_t players[NBRE_JOUEURS])
+{
+    memset(players, 0, NBRE_JOUEURS * sizeof(player_t));
+
+    players[0].is_human = true;
+
+    for (int i = 0; i < NBRE_JOUEURS; i++) {
+        players[i].idx= i;
+    }
+}
+
 void start_new_game(carte_t game[])
 {
     player_t players[NBRE_JOUEURS];
 
-    memset(players, 0, sizeof(players));
-
-    players[0].is_human = true;
+    init_players(players);
 
     start_new_ronud(game, players, 0);
 }
