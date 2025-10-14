@@ -224,8 +224,49 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
                                                       const carte_t *card,
                                                       couleur_t *trump_color)
 {
-    logger_error("does_virtual_player_take_card_second_turn "
-                 "NOT YET IMPLEMENTED");
+    int total_pts_best_color = 0;
+    int trump_color_pts_best_color = 0;
+    int best_color = -1;
+
+    logger_info("player %d has these cards: ", player->idx);
+    display_player_cards(player);
+
+    for (int i = CARREAU; i <= TREFLE; i++) {
+        bool is_color_ok;
+        int trump_color_pts = 0;
+        int total_pts;
+
+        total_pts = get_value_card(card, i);
+        get_player_cards_value(player, card->c, &trump_color_pts,
+                               &total_pts);
+
+        logger_info("color %s, trump_color_pts: %d, total_pts: %d",
+                    name_coul(i), trump_color_pts, total_pts);
+
+        is_color_ok = should_player_take_with_color(&(player->cards[i]),
+                                                    trump_color_pts,
+                                                    total_pts);
+        if (is_color_ok) {
+            if ((total_pts - total_pts_best_color)  +
+                (trump_color_pts - trump_color_pts_best_color) > 0)
+            {
+                logger_info("color %s should be taken and is the best color "
+                            "for now", name_coul(i));
+                best_color = i;
+            } else {
+                logger_info("color %s could be taken but not better than "
+                            "best color", name_coul(i));
+            }
+        } else {
+            logger_info("color %s should not be taken", name_coul(i));
+        }
+    }
+
+    if (best_color != -1) {
+        *trump_color = best_color;
+        return true;
+    }
+
     return false;
 }
 
