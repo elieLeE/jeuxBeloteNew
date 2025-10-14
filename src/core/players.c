@@ -156,7 +156,6 @@ does_human_player_take_card_second_turn(const player_t *player,
 /* }}} */
 /* {{{ Virtual player */
 
-__attr_unused__
 static void
 get_player_cards_value(const player_t *player, couleur_t trump_color,
                        int *trump_color_pts, int *total_pts)
@@ -174,7 +173,6 @@ get_player_cards_value(const player_t *player, couleur_t trump_color,
     }
 }
 
-__attr_unused__
 static bool
 should_player_take_with_color(const generic_liste_t *trump_cards_list,
                             int trump_color_pts, int total_pts)
@@ -199,9 +197,27 @@ should_player_take_with_color(const generic_liste_t *trump_cards_list,
 static bool does_virtual_player_take_card_first_turn(const player_t *player,
                                                      const carte_t *card)
 {
-    logger_error("does_virtual_player_take_card_first_turn "
-                 "NOT YET IMPLEMENTED");
-    return false;
+    int trump_color_pts, total_pts;
+    const generic_liste_t *trump_cards = &(player->cards[card->c]);
+
+    logger_info("player %d has these cards: ", player->idx);
+    display_player_cards(player);
+
+    if (card->r == VALET) {
+        return true;
+    }
+
+    if (trump_cards->nbre_elem == 0) {
+        return false;
+    }
+
+    total_pts = trump_color_pts += get_value_card(card, card->c);
+    get_player_cards_value(player, card->c, &trump_color_pts, &total_pts);
+    logger_info("trump_color_pts: %d, total_pts: %d",
+                trump_color_pts, total_pts);
+
+    return
+        should_player_take_with_color(trump_cards, trump_color_pts, total_pts);
 }
 
 static bool does_virtual_player_take_card_second_turn(const player_t *player,
