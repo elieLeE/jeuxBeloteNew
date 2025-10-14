@@ -158,12 +158,17 @@ does_player_take_card_second_turn(const player_t *player, const carte_t *card,
 
 /* }}} */
 
+static int cmp_card_descending_order(const void *c1, const void *c2)
+{
+    return - cmp_card(c1, c2);
+}
+
 void add_card_to_player(player_t *player, carte_t *card)
 {
     generic_liste_t *list_cards;
 
     list_cards = &(player->cards[card->c]);
-    gl_add_elem_first(list_cards, card);
+    gl_add_elem_sorted(list_cards, card, cmp_card_descending_order);
 }
 
 void free_player_cards(player_t *player)
