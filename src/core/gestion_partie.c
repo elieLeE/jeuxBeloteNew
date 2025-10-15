@@ -156,6 +156,13 @@ typedef struct trick_t {
     int idx_player_won;
 } trick_t;
 
+static int get_all_tricks(player_t players[NBRE_JOUEURS], int idx_first_player,
+                          couleur_t trump_color, trick_t tricks[NBER_TRICKS])
+{
+    logger_error("get_next_trick NOT YET IMPLEMENTED");
+    return -1;
+}
+
 /* handling a new round:
  * - split the cards (the determining of the trump is done inside)
  * - do the trick
@@ -180,7 +187,12 @@ start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
         memset(tricks, 0, sizeof(tricks));
 
         set_cards_trump_status(game, trump_color);
-
+        if (get_all_tricks(players, idx_first_player, trump_color, tricks) < 0)
+        {
+            logger_error("an error happened in 'get_all_tricks'");
+        } else {
+            logger_error("COUNT POINTS WON BY TEAMS - NOT YET IMPLEMENTED");
+        }
         reset_cards_trump_status(game);
     } else {
         logger_info("none players has taken the card - "
