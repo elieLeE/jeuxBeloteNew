@@ -151,6 +151,11 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
 /* }}} */
 /* {{{ Round */
 
+typedef struct trick_t {
+    carte_t *cards[NBRE_JOUEURS];
+    int idx_player_won;
+} trick_t;
+
 /* handling a new round:
  * - split the cards (the determining of the trump is done inside)
  * - do the trick
@@ -170,6 +175,10 @@ start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
     res = all_split_cards(game, players, idx_first_player, &trump_color,
                           &idx_player_taking);
     if (res >= 0) {
+        trick_t tricks[NBER_TRICKS];
+
+        memset(tricks, 0, sizeof(tricks));
+
         set_cards_trump_status(game, trump_color);
 
         reset_cards_trump_status(game);
