@@ -10,6 +10,9 @@
 #include "gestion_jeu_carte.h"
 #include "players.h"
 
+#define GET_NEXT_PLAYER_IDX(_idx_player)                                      \
+    (_idx_player + 1) % NBRE_JOUEURS;
+
 /* {{{ Splitting cards */
 
 static void
@@ -26,7 +29,7 @@ partial_split_cards(carte_t game[], player_t players[NBRE_JOUEURS],
             add_card_to_player(player, &(game[idx_card]));
             idx_card++;
         }
-        idx_player = (idx_player + 1) % NBRE_JOUEURS;
+        idx_player = GET_NEXT_PLAYER_IDX(idx_player);
     } while (idx_player != idx_first_player);
 }
 
@@ -46,7 +49,7 @@ final_split_cards(carte_t game[], player_t players[NBRE_JOUEURS],
             add_card_to_player(player, &(game[idx_card]));
             idx_card++;
         }
-        idx_player = (idx_player + 1) % NBRE_JOUEURS;
+        idx_player = GET_NEXT_PLAYER_IDX(idx_player);
     } while (idx_player != idx_first_player);
 }
 
