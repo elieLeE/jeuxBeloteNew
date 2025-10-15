@@ -156,11 +156,22 @@ typedef struct trick_t {
     int idx_player_won;
 } trick_t;
 
-static int get_all_tricks(player_t players[NBRE_JOUEURS], int idx_first_player,
-                          couleur_t trump_color, trick_t tricks[NBER_TRICKS])
+static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
+                          couleur_t trump_color, trick_t *out)
 {
     logger_error("get_next_trick NOT YET IMPLEMENTED");
     return -1;
+}
+
+static int get_all_tricks(player_t players[NBRE_JOUEURS], int idx_first_player,
+                          couleur_t trump_color, trick_t tricks[NBER_TRICKS])
+{
+    for (int i = 0; i < 8; i++) {
+        idx_first_player =
+            RETHROW(get_next_trick(players, idx_first_player, trump_color,
+                                   &(tricks[i])));
+    }
+    return 0;
 }
 
 /* handling a new round:
