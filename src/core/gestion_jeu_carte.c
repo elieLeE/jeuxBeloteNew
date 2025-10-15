@@ -78,3 +78,21 @@ void coupe_jeu(carte_t jeu[])
     memcpy(&jeu[NBRE_CARTES - idx], &copie_jeu, carte_sizeof * idx);
 }
 
+void set_cards_trump_status(carte_t cards[NBRE_CARTES], couleur_t color_card)
+{
+    for (int i = 0; i < NBRE_CARTES; i++) {
+        carte_t *card = &(cards[i]);
+
+        if (card->c == color_card) {
+            card->is_trump = true;
+        }
+    }
+}
+
+void reset_cards_trump_status(carte_t cards[NBRE_CARTES])
+{
+    for (int i = 0; i < NBRE_CARTES; i++) {
+        cards[i].is_trump = false;
+    }
+}
+
