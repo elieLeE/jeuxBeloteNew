@@ -6,7 +6,7 @@
 
 #include "../../libC/src/logger/logger.h"
 
-#include "../defines.h"
+#include "../macros.h"
 
 typedef enum rang_t {
     SEPT,

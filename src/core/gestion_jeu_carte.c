@@ -5,7 +5,7 @@
 
 #include "../../libC/src/logger/logger.h"
 
-#include "../defines.h"
+#include "../macros.h"
 #include "gestion_jeu_carte.h"
 
 int melange_jeu(carte_t jeu[])

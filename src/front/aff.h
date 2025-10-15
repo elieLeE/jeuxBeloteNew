@@ -1,7 +1,7 @@
 #ifndef __AFF_H__
 #define __AFF_H__
 
-#include "../defines.h"
+#include "../macros.h"
 #include "../core/carte.h"
 #include "../core/players.h"
 

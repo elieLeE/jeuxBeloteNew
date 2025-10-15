@@ -6,7 +6,7 @@
 #include "../libC/src/logger/logger.h"
 
 #include "test_gestion_cartes.h"
-#include "../src/defines.h"
+#include "../src/macros.h"
 #include "../src/core/carte.h"
 #include "../src/core/gestion_jeu_carte.h"
 

@@ -4,7 +4,7 @@
 
 #include "../../libC/src/logger/logger.h"
 
-#include "defines.h"
+#include "macros.h"
 #include "core/carte.h"
 #include "core/gestion_jeu_carte.h"
 #include "core/gestion_partie.h"

@@ -6,7 +6,7 @@
 #include "../../libC/src/liste/type.h"
 
 #include "carte.h"
-#include "../defines.h"
+#include "../macros.h"
 
 typedef struct player_t {
     generic_liste_t cards[NBRE_COUL];
