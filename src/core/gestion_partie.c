@@ -159,8 +159,47 @@ typedef struct trick_t {
 static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
                           couleur_t trump_color, trick_t *out)
 {
-    logger_error("get_next_trick NOT YET IMPLEMENTED");
-    return -1;
+    int idx_player = idx_first_player;
+    int idx_master_player = idx_first_player;
+    int player_counter = 0;
+    carte_t *master_card = NULL;
+    carte_t *first_card = NULL;
+
+    first_card = master_card =
+        take_first_card_from_player(&(players[idx_first_player]), trump_color);
+
+    if (first_card == NULL) {
+        return -1;
+    }
+    idx_first_player = GET_NEXT_PLAYER_IDX(idx_first_player);
+
+    do {
+        carte_t *opponent_card;
+
+        opponent_card =
+            take_card_from_player(&(players[idx_player]), first_card->c,
+                                  trump_color, idx_master_player);
+
+        if (opponent_card == NULL) {
+            return -1;
+        }
+
+        if (master_card == NULL) {
+            master_card = opponent_card;
+        } else if (cmp_card(master_card, opponent_card) < 0) {
+            master_card = opponent_card;
+            idx_master_player = idx_player;
+        }
+
+        out->cards[player_counter] = opponent_card;;
+
+        player_counter++;
+        idx_player = GET_NEXT_PLAYER_IDX(idx_player);
+    } while (idx_player != idx_first_player);
+
+    out->idx_player_won = idx_master_player;
+
+    return 0;
 }
 
 static int get_all_tricks(player_t players[NBRE_JOUEURS], int idx_first_player,
