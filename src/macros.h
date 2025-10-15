@@ -10,4 +10,6 @@
 
 #define NBRE_JOUEURS 4
 
+#define NBER_TRICKS 8
+
 #endif
