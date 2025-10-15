@@ -160,15 +160,19 @@ static void
 start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
                 int idx_first_player)
 {
+    int res;
     couleur_t trump_color = -1;
     int idx_player_taking = -1;
 
     logger_info("coupe du game\n");
     coupe_jeu(game);
 
-    if (all_split_cards(game, players, idx_first_player, &trump_color,
-                        &idx_player_taking) == 0)
-    {
+    res = all_split_cards(game, players, idx_first_player, &trump_color,
+                          &idx_player_taking);
+    if (res >= 0) {
+        set_cards_trump_status(game, trump_color);
+
+        reset_cards_trump_status(game);
     } else {
         logger_info("none players has taken the card - "
                     "this round is canceled");
