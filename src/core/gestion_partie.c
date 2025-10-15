@@ -156,8 +156,9 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
  * - do the trick
  * - increment the points won by each player
  */
-void start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
-                     int idx_first_player)
+static void
+start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
+                int idx_first_player)
 {
     couleur_t trump_color = -1;
     int idx_player_taking = -1;
