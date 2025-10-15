@@ -15,7 +15,7 @@ int main()
 
     srand(time(NULL));
 
-    logger_info("starting belote game\n");
+    logger_info("starting belote game");
 
     if (melange_jeu(jeu) < 0) {
         logger_error("error when trying to mix the cards. "
