@@ -1,10 +1,10 @@
-#include <string.h>
 #include <stdio.h>
 
 #include "assert.h"
 
 #include "../libC/src/io/io.h"
 #include "../libC/src/macros.h"
+#include "../libC/src/mem/mem.h"
 
 #include "test_players.h"
 
@@ -22,7 +22,7 @@ void test_does_human_player_take_card_second_turn_(const char *file_name,
     couleur_t color_get;
     carte_t card = {.r = ROI, .c = color_forbidden};
 
-    memset(&player, 0, sizeof(player_t));
+    p_clear(&player, 1);
 
     player.is_human = true;
 
