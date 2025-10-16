@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include "../../libC/src/liste/type.h"
+#include "../../libC/src/liste/liste.h"
 
 #include "carte.h"
 #include "../macros.h"
