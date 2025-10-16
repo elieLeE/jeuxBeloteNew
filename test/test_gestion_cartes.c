@@ -49,8 +49,6 @@ void test_melange_jeu(void)
     melange_jeu(jeu);
 
     verif_jeu_carte(jeu);
-
-    logger_test_ok("melange_jeu");
 }
 
 void test_coupe_jeu()
@@ -77,6 +75,14 @@ void test_coupe_jeu()
         i = (i + 1) % NBRE_CARTES;
         j = (j + 1) % NBRE_CARTES;
     }
+}
 
-    logger_test_ok("coupe_jeu");
+void test_gestion_cartes(void)
+{
+    BEGIN_TEST_MODULE("gestion cartes");
+
+    CALL_TEST_FUNC(test_melange_jeu);
+    CALL_TEST_FUNC(test_coupe_jeu);
+
+    END_TEST_MODULE();
 }

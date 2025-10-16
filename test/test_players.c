@@ -72,6 +72,13 @@ void test_does_human_player_take_card_second_turn(void)
     test_does_human_player_take_card_second_turn_(
         "test_files/human_player_tale_card_second_turn/reject_2.txt",
         false, CARREAU, COEUR);
+}
 
-    logger_test_ok("does_human_player_take_card_second_turn");
+void test_players(void)
+{
+    BEGIN_TEST_MODULE("players");
+
+    CALL_TEST_FUNC(test_does_human_player_take_card_second_turn);
+
+    END_TEST_MODULE();
 }
