@@ -11,6 +11,8 @@
 #include "../src/core/carte.h"
 #include "../src/core/players.h"
 
+/* {{{ Trump selection */
+
 void test_does_human_player_take_card_second_turn_(const char *file_name,
                                                    bool should_accept,
                                                    couleur_t color_forbidden,
@@ -73,6 +75,9 @@ void test_does_human_player_take_card_second_turn(void)
         "test_files/human_player_tale_card_second_turn/reject_2.txt",
         false, CARREAU, COEUR);
 }
+
+
+/* }}} */
 
 void test_players(void)
 {
