@@ -24,10 +24,12 @@ void test_does_human_player_take_card_second_turn_(const char *file_name,
 
     memset(&player, 0, sizeof(player_t));
 
+    player.is_human = true;
+
     f = redirect_stream(stdin, file_name, "r");
 
     has_taken_the_card =
-        does_human_player_take_card_second_turn(&player, &card, &color_get);
+        does_player_take_card_second_turn(&player, &card, &color_get);
     if (has_taken_the_card && !should_accept) {
         ASSERT(false, "user should not have accepted the card");
     } else if (!has_taken_the_card && should_accept) {

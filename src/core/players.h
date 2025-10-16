@@ -25,9 +25,6 @@ typedef struct player_t {
 bool does_player_take_card_first_turn(const player_t *player,
                                       const carte_t *card);
 
-bool does_human_player_take_card_second_turn(const player_t *player,
-                                             const carte_t *card,
-                                             couleur_t *trump_color);
 bool does_player_take_card_second_turn(const player_t *player,
                                        const carte_t *card,
                                        couleur_t *color_chosen);

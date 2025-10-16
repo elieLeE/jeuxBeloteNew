@@ -110,7 +110,7 @@ static int get_couleur_from_str(const char *str, couleur_t *coul_found)
     return -1;
 }
 
-bool
+static bool
 does_human_player_take_card_second_turn(const player_t *player,
                                         const carte_t *card,
                                         couleur_t *trump_color)
