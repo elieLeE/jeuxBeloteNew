@@ -40,12 +40,10 @@ int cmp_card(const void *_c1, const void *_c2)
         return -1;
     }
 
-    /* In this method, asked color is the one of the card 'c1'. */
     if (c1->c != c2->c) {
         return 1;
     }
 
-    /* in this method, the cards are considered as no trump */
     return c1->r - c2->r;
 }
 

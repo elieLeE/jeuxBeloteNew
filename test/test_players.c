@@ -12,6 +12,7 @@
 #include "../src/core/players.h"
 
 /* {{{ Trump selection */
+/* {{{ Human player */
 
 void test_does_human_player_take_card_second_turn_(const char *file_name,
                                                    bool should_accept,
@@ -76,6 +77,7 @@ void test_does_human_player_take_card_second_turn(void)
         false, CARREAU, COEUR);
 }
 
+/* }}} */
 
 /* }}} */
 
