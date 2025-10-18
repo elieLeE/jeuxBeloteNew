@@ -202,6 +202,104 @@ static void test_does_virtual_player_take_card_first_turn(void)
 }
 
 /* }}} */
+/* {{{ Second turn */
+
+static void check_virtual_player_choice_second_turn(player_t *player,
+                                                    rang_t r, couleur_t c,
+                                                    bool should_accept,
+                                                    couleur_t color_wanted,
+                                                    const char *text_err)
+{
+    bool has_accepted_the_card;
+    carte_t card = {.r = r, .c = c};
+    couleur_t color_got;
+
+    logger_trace("start %s", text_err);
+
+    has_accepted_the_card =
+        does_player_take_card_second_turn(player, &card, &color_got);
+
+    ASSERT(has_accepted_the_card == should_accept, "%s", text_err);
+
+    if (should_accept) {
+        ASSERT(color_wanted == color_got, "obtained: %s, expected: %s",
+           name_coul(color_got), name_coul(color_wanted));
+    }
+}
+
+static void test_does_virtual_player_take_card_second_turn(void)
+{
+    player_t player;
+
+    p_clear(&player, 1);
+
+    player.is_human = false;
+
+    /* Valet, 9 on the same color, an As and 2 kings on others colors
+     * => should be taken */
+    create_card_and_add_to_player(&player, VALET, PIQUE);
+    create_card_and_add_to_player(&player, NEUF, PIQUE);
+    create_card_and_add_to_player(&player, AS, CARREAU);
+    create_card_and_add_to_player(&player, ROI, TREFLE);
+    create_card_and_add_to_player(&player, ROI, COEUR);
+    check_virtual_player_choice_second_turn(&player, NEUF, CARREAU, true,
+                                            PIQUE,
+                                            "Turn 2, valet, 9 and an AS");
+    free_player_cards_(&player);
+
+    /* Valet, 9 Roi and Dame on the same color => should be taken */
+    create_card_and_add_to_player(&player, VALET, TREFLE);
+    create_card_and_add_to_player(&player, NEUF, TREFLE);
+    create_card_and_add_to_player(&player, HUIT, CARREAU);
+    create_card_and_add_to_player(&player, ROI, TREFLE);
+    create_card_and_add_to_player(&player, DAME, TREFLE);
+    check_virtual_player_choice_second_turn(&player, NEUF, COEUR, true, TREFLE,
+                                            "Turn 2, valet, 9, Roi and Dame");
+    free_player_cards_(&player);
+
+    /* 5 smalls cards on the same color => should be taken */
+    create_card_and_add_to_player(&player, DAME, CARREAU);
+    create_card_and_add_to_player(&player, SEPT, CARREAU);
+    create_card_and_add_to_player(&player, AS, CARREAU);
+    create_card_and_add_to_player(&player, ROI, CARREAU);
+    create_card_and_add_to_player(&player, DIX, CARREAU);
+    check_virtual_player_choice_second_turn(&player, HUIT, PIQUE, true,
+                                            CARREAU, "Turn 2, 5 trump cards");
+    free_player_cards_(&player);
+
+    /* No big cards on trump order in any color => should not been taken */
+    create_card_and_add_to_player(&player, DAME, CARREAU);
+    create_card_and_add_to_player(&player, SEPT, TREFLE);
+    create_card_and_add_to_player(&player, AS, CARREAU);
+    create_card_and_add_to_player(&player, ROI, COEUR);
+    create_card_and_add_to_player(&player, DIX, PIQUE);
+    check_virtual_player_choice_second_turn(&player, AS, PIQUE, false, -1,
+                                           "Turn 2, no big trump cards");
+    free_player_cards_(&player);
+
+    /* Some bugs cards on no trump order and some small cards on eventual trump
+     * but insufficient => should not been taken */
+    create_card_and_add_to_player(&player, AS, CARREAU);
+    create_card_and_add_to_player(&player, DIX, CARREAU);
+    create_card_and_add_to_player(&player, AS, PIQUE);
+    create_card_and_add_to_player(&player, DAME, TREFLE);
+    create_card_and_add_to_player(&player, ROI, TREFLE);
+    check_virtual_player_choice_second_turn(&player, AS, CARREAU, false, -1,
+                                           "Turn 2, not big trump cards 2");
+    free_player_cards_(&player);
+
+    /* Valet, 9 on a color and that's it => should not be taken */
+    create_card_and_add_to_player(&player, VALET, CARREAU);
+    create_card_and_add_to_player(&player, NEUF, CARREAU);
+    create_card_and_add_to_player(&player, SEPT, TREFLE);
+    create_card_and_add_to_player(&player, HUIT, PIQUE);
+    create_card_and_add_to_player(&player, DIX, PIQUE);
+    check_virtual_player_choice_second_turn(&player, NEUF, TREFLE, false, -1,
+                                           "Turn 2, valet and 9");
+    free_player_cards_(&player);
+}
+
+/* }}} */
 /* }}} */
 /* }}} */
 
@@ -211,6 +309,7 @@ void test_players(void)
 
     CALL_TEST_FUNC(test_does_human_player_take_card_second_turn);
     CALL_TEST_FUNC(test_does_virtual_player_take_card_first_turn);
+    CALL_TEST_FUNC(test_does_virtual_player_take_card_second_turn);
 
     END_TEST_MODULE();
 }
