@@ -207,7 +207,7 @@ static bool does_virtual_player_take_card_first_turn(const player_t *player,
     logger_trace("player %d has these cards: ", player->idx);
     display_player_cards(player);
 
-    if (card->r == VALET) {
+    if (card->r == VALET || trump_cards->nbre_elem == 5) {
         return true;
     }
 
