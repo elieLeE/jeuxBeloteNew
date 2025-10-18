@@ -179,7 +179,7 @@ get_player_cards_value(const player_t *player, couleur_t trump_color,
 
 static bool
 should_player_take_with_color(const generic_liste_t *trump_cards_list,
-                            int trump_color_pts, int total_pts)
+                              int trump_color_pts, int total_pts)
 {
     bool has_valet;
 

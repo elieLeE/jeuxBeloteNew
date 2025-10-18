@@ -265,7 +265,7 @@ static void init_players(player_t players[NBRE_JOUEURS])
     players[0].is_human = true;
 
     for (int i = 0; i < NBRE_JOUEURS; i++) {
-        players[i].idx= i;
+        players[i].idx = i;
     }
 }
 
