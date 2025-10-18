@@ -153,7 +153,7 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
 /* {{{ Round */
 
 typedef struct trick_t {
-    carte_t *cards[NBRE_JOUEURS];
+    const carte_t *cards[NBRE_JOUEURS];
     int idx_player_won;
 } trick_t;
 
@@ -163,8 +163,8 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
     int idx_player = idx_first_player;
     int idx_master_player = idx_first_player;
     int player_counter = 0;
-    carte_t *master_card = NULL;
-    carte_t *first_card = NULL;
+    const carte_t *master_card = NULL;
+    const carte_t *first_card = NULL;
 
     first_card = master_card =
         RETHROW_PN(take_first_card_from_player(&(players[idx_first_player]),
@@ -172,7 +172,7 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
     idx_first_player = GET_NEXT_PLAYER_IDX(idx_first_player);
 
     do {
-        carte_t *opponent_card;
+        const carte_t *opponent_card;
 
         opponent_card =
             RETHROW_PN(take_card_from_player(&(players[idx_player]),
@@ -184,7 +184,7 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
             idx_master_player = idx_player;
         }
 
-        out->cards[player_counter] = opponent_card;;
+        out->cards[player_counter] = opponent_card;
 
         player_counter++;
         idx_player = GET_NEXT_PLAYER_IDX(idx_player);
