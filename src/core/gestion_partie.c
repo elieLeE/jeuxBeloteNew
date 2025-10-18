@@ -4,6 +4,7 @@
 
 #include "../../libC/src/macros.h"
 #include "../../libC/src/logger/logger.h"
+#include "../../libC/src/mem/mem.h"
 
 #include "../macros.h"
 #include "gestion_partie.h"
@@ -234,7 +235,7 @@ start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
     if (res >= 0) {
         trick_t tricks[NBER_TRICKS];
 
-        memset(tricks, 0, sizeof(tricks));
+        p_clear(tricks, NBER_TRICKS);
 
         set_cards_trump_status(game, trump_color);
         if (get_all_tricks(players, idx_first_player, trump_color, tricks) < 0)
@@ -259,7 +260,7 @@ start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
 
 static void init_players(player_t players[NBRE_JOUEURS])
 {
-    memset(players, 0, NBRE_JOUEURS * sizeof(player_t));
+    p_clear(players, NBRE_JOUEURS);
 
     players[0].is_human = true;
 
