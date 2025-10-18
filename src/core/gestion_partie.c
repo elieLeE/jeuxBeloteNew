@@ -179,10 +179,7 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
                                              first_card->c, trump_color,
                                              idx_master_player));
 
-
-        if (master_card == NULL) {
-            master_card = opponent_card;
-        } else if (cmp_card(master_card, opponent_card) < 0) {
+        if (cmp_card(master_card, opponent_card) < 0) {
             master_card = opponent_card;
             idx_master_player = idx_player;
         }
