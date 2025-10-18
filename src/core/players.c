@@ -178,20 +178,30 @@ get_player_cards_value(const player_t *player, couleur_t trump_color,
 }
 
 static bool
-should_player_take_with_color(const generic_liste_t *trump_cards_list,
+should_player_take_with_color(const generic_liste_t *trump_cards,
                               int trump_color_pts, int total_pts)
 {
     bool has_valet;
 
-    has_valet = has_player_card(trump_cards_list, VALET);
+    has_valet = has_player_card(trump_cards, VALET);
 
     if (has_valet) {
-        if (trump_cards_list->nbre_elem >= 3) {
+        if (trump_cards->nbre_elem >= 3) {
+            carte_t *c = (carte_t *)trump_cards->first->data;
+
+            logger_trace("Player has at least 3 cards, including the valet "
+                         "on color %s - automatically accepted",
+                         name_coul(c->c));
             return true;
         }
     }
 
     if (trump_color_pts >= 34 && total_pts >= 50) {
+        carte_t *c = (carte_t *)trump_cards->first->data;
+
+        logger_trace("Player has %d points on trump color %s and %d points "
+                     "on others colors - accepted",
+                     trump_color_pts, name_coul(c->c), total_pts);
         return true;
     }
 
