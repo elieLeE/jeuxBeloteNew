@@ -167,23 +167,18 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
     carte_t *first_card = NULL;
 
     first_card = master_card =
-        take_first_card_from_player(&(players[idx_first_player]), trump_color);
-
-    if (first_card == NULL) {
-        return -1;
-    }
+        RETHROW_PN(take_first_card_from_player(&(players[idx_first_player]),
+                                               trump_color));
     idx_first_player = GET_NEXT_PLAYER_IDX(idx_first_player);
 
     do {
         carte_t *opponent_card;
 
         opponent_card =
-            take_card_from_player(&(players[idx_player]), first_card->c,
-                                  trump_color, idx_master_player);
+            RETHROW_PN(take_card_from_player(&(players[idx_player]),
+                                             first_card->c, trump_color,
+                                             idx_master_player));
 
-        if (opponent_card == NULL) {
-            return -1;
-        }
 
         if (master_card == NULL) {
             master_card = opponent_card;
