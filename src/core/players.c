@@ -251,17 +251,44 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
     logger_trace("player %d has these cards: ", player->idx);
     display_player_cards(player);
 
-    for (int i = CARREAU; i <= TREFLE; i++) {
+    for (unsigned int i = CARREAU; i <= TREFLE; i++) {
         bool is_color_ok;
         int trump_color_pts = 0;
         int total_pts, selecting_trump_card;
+        const generic_liste_t *trump_cards;
+
+        logger_trace("investigating with color %s for trump", name_coul(i));
+
+        if (i == card->c) {
+            logger_trace("On second turn, color of visible card can not be "
+                         "selected: skip");
+            continue;
+        }
+
+        trump_cards = &(player->cards[i]);
+
+        if (trump_cards->nbre_elem == 0) {
+            logger_trace("Player has no card on color %s - "
+                         "automatically rejected", name_coul(i));
+            continue;
+        }
+
+        if (trump_cards->nbre_elem == 5) {
+            carte_t *c = (carte_t *)trump_cards->first->data;
+
+            logger_trace("Player has 5 cards on color %s - "
+                         "automatically accepted", name_coul(c->c));
+
+            *trump_color = i;
+
+            return true;
+        }
 
         selecting_trump_card = get_value_card(card, i);
         logger_trace("selecting trump card: " CARD_FMT ", %d",
                      CARD_FMT_ARG(card), selecting_trump_card);
 
-        get_player_cards_value(player, card->c, &trump_color_pts,
-                               &total_pts);
+        get_player_cards_value(player, i, &trump_color_pts, &total_pts);
         total_pts += selecting_trump_card;
 
         logger_trace("color %s, trump_color_pts: %d, total_pts: %d",
