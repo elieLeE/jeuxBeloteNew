@@ -42,7 +42,7 @@ static void verif_jeu_carte(carte_t jeu[])
     }
 }
 
-void test_melange_jeu(void)
+static void test_melange_jeu(void)
 {
     carte_t jeu[NBRE_CARTES];
 
@@ -51,7 +51,7 @@ void test_melange_jeu(void)
     verif_jeu_carte(jeu);
 }
 
-void test_coupe_jeu()
+static void test_coupe_jeu()
 {
     int idx_coupe = -1;
 
