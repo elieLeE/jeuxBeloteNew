@@ -206,7 +206,7 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
 static int get_all_tricks(player_t players[NBRE_JOUEURS], int idx_first_player,
                           couleur_t trump_color, trick_t tricks[NBER_TRICKS])
 {
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < NBER_TRICKS; i++) {
         idx_first_player =
             RETHROW(get_next_trick(players, idx_first_player, trump_color,
                                    &(tricks[i])));
