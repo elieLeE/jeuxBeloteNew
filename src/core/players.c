@@ -38,7 +38,7 @@ get_sum_points_list_card(const generic_liste_t *cards, couleur_t trump_color)
         card_pt = get_value_card(c, trump_color);
         sum += card_pt;
 
-        logger_info("card " CARD_FMT " => %d, total: %d",
+        logger_trace("card " CARD_FMT " => %d, total: %d",
                     CARD_FMT_ARG(c), card_pt, sum);
         if (c->r == ROI || c->r == DAME) {
             belote_and_re++;
@@ -72,6 +72,8 @@ does_human_player_take_card_first_turn(const player_t *player,
         if (read_n_carac_and_flush(3, stdin, answer) == -1) {
             continue;
         }
+
+        logger_trace("answer: %s", answer);
 
         if (strlen(answer) == 1) {
             switch (answer[0]) {
@@ -133,6 +135,8 @@ does_human_player_take_card_second_turn(const player_t *player,
         if (read_n_carac_and_flush(9, stdin, answer) == -1) {
             continue;
         }
+        logger_trace("answer: %s", answer);
+
         upper_string(answer);
 
         if (get_couleur_from_str(answer, &color_asked_by_player) == 0) {
@@ -200,7 +204,7 @@ static bool does_virtual_player_take_card_first_turn(const player_t *player,
     int trump_color_pts, total_pts;
     const generic_liste_t *trump_cards = &(player->cards[card->c]);
 
-    logger_info("player %d has these cards: ", player->idx);
+    logger_trace("player %d has these cards: ", player->idx);
     display_player_cards(player);
 
     if (card->r == VALET) {
@@ -213,7 +217,7 @@ static bool does_virtual_player_take_card_first_turn(const player_t *player,
 
     total_pts = trump_color_pts += get_value_card(card, card->c);
     get_player_cards_value(player, card->c, &trump_color_pts, &total_pts);
-    logger_info("trump_color_pts: %d, total_pts: %d",
+    logger_trace("trump_color_pts: %d, total_pts: %d",
                 trump_color_pts, total_pts);
 
     return
@@ -228,7 +232,7 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
     int trump_color_pts_best_color = 0;
     int best_color = -1;
 
-    logger_info("player %d has these cards: ", player->idx);
+    logger_trace("player %d has these cards: ", player->idx);
     display_player_cards(player);
 
     for (int i = CARREAU; i <= TREFLE; i++) {
@@ -240,8 +244,8 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
         get_player_cards_value(player, card->c, &trump_color_pts,
                                &total_pts);
 
-        logger_info("color %s, trump_color_pts: %d, total_pts: %d",
-                    name_coul(i), trump_color_pts, total_pts);
+        logger_trace("color %s, trump_color_pts: %d, total_pts: %d",
+                     name_coul(i), trump_color_pts, total_pts);
 
         is_color_ok = should_player_take_with_color(&(player->cards[i]),
                                                     trump_color_pts,
@@ -250,15 +254,15 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
             if ((total_pts - total_pts_best_color)  +
                 (trump_color_pts - trump_color_pts_best_color) > 0)
             {
-                logger_info("color %s should be taken and is the best color "
-                            "for now", name_coul(i));
+                logger_trace("color %s should be taken and is the best color "
+                             "for now", name_coul(i));
                 best_color = i;
             } else {
-                logger_info("color %s could be taken but not better than "
-                            "best color", name_coul(i));
+                logger_trace("color %s could be taken but not better than "
+                             "best color", name_coul(i));
             }
         } else {
-            logger_info("color %s should not be taken", name_coul(i));
+            logger_trace("color %s should not be taken", name_coul(i));
         }
     }
 
