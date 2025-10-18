@@ -1,7 +1,5 @@
 #include <string.h>
 
-#include "assert.h"
-
 #include "../libC/src/macros.h"
 #include "../libC/src/logger/logger.h"
 
@@ -37,7 +35,9 @@ static void verif_jeu_carte(carte_t jeu[])
         for (r = SEPT; r <= AS; r++) {
             tmp.r = r;
 
-            assert (get_card_idx(jeu, &tmp) >= 0);
+            ASSERT(get_card_idx(jeu, &tmp) >= 0,
+                   "card " CARD_FMT " has not been found",
+                   CARD_FMT_ARG((&tmp)));
         }
     }
 }
@@ -66,11 +66,16 @@ void test_coupe_jeu()
     coupe_jeu(jeu2);
 
     idx_coupe = get_card_idx(jeu2, &jeu[0]);
-    assert(idx_coupe > 0 && idx_coupe < NBRE_CARTES -1);
+    ASSERT(idx_coupe > 0 && idx_coupe < NBRE_CARTES -1,
+           "idx_coupe: %d", idx_coupe);
 
-    for (int i = 1, j = idx_coupe + 1; j != idx_coupe; )
-    {
-        assert (are_same_cards(&jeu[i], &jeu2[j]));
+    for (int i = 1, j = idx_coupe + 1; j != idx_coupe; ) {
+        carte_t *c1 = &jeu[i];
+        carte_t *c2 = &jeu2[j];
+
+        ASSERT(are_same_cards(c1, c2),
+               "card 1: " CARD_FMT ", card 2: " CARD_FMT,
+               CARD_FMT_ARG(c1), CARD_FMT_ARG(c2));
 
         i = (i + 1) % NBRE_CARTES;
         j = (j + 1) % NBRE_CARTES;
