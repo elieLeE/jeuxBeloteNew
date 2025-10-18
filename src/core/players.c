@@ -211,7 +211,7 @@ should_player_take_with_color(const generic_liste_t *trump_cards,
 static bool does_virtual_player_take_card_first_turn(const player_t *player,
                                                      const carte_t *card)
 {
-    int trump_color_pts, total_pts;
+    int trump_color_pts, total_pts, trump_card_pt;
     const generic_liste_t *trump_cards = &(player->cards[card->c]);
 
     logger_trace("player %d has these cards: ", player->idx);
@@ -225,8 +225,14 @@ static bool does_virtual_player_take_card_first_turn(const player_t *player,
         return false;
     }
 
-    total_pts = trump_color_pts += get_value_card(card, card->c);
+    trump_card_pt = get_value_card(card, card->c);
+    logger_trace("card trump: " CARD_FMT ", %d",
+                 CARD_FMT_ARG(card), trump_card_pt);
+
     get_player_cards_value(player, card->c, &trump_color_pts, &total_pts);
+    trump_color_pts += trump_card_pt;
+    total_pts += trump_card_pt;
+
     logger_trace("trump_color_pts: %d, total_pts: %d",
                 trump_color_pts, total_pts);
 
@@ -248,11 +254,15 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
     for (int i = CARREAU; i <= TREFLE; i++) {
         bool is_color_ok;
         int trump_color_pts = 0;
-        int total_pts;
+        int total_pts, selecting_trump_card;
 
-        total_pts = get_value_card(card, i);
+        selecting_trump_card = get_value_card(card, i);
+        logger_trace("selecting trump card: " CARD_FMT ", %d",
+                     CARD_FMT_ARG(card), selecting_trump_card);
+
         get_player_cards_value(player, card->c, &trump_color_pts,
                                &total_pts);
+        total_pts += selecting_trump_card;
 
         logger_trace("color %s, trump_color_pts: %d, total_pts: %d",
                      name_coul(i), trump_color_pts, total_pts);
