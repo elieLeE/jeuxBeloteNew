@@ -7,8 +7,24 @@
 
 #include "players.h"
 #include "carte.h"
-#include "../front/aff.h"
 
+#define PLAYER_CARDS_FMT_SIZE 200
+
+static void
+get_player_cards_str(const player_t *player, char out[PLAYER_CARDS_FMT_SIZE])
+{
+    int len = 0;
+
+    for (int i = 0; i < NBRE_COUL; i++) {
+        const generic_liste_t *l = &(player->cards[i]);
+
+        gl_for_each(elem, l->first) {
+            len += snprintf(out + len, PLAYER_CARDS_FMT_SIZE - len,
+                           CARD_FMT ", ",
+                           CARD_FMT_ARG(((carte_t *)elem->data)));
+        }
+    }
+}
 
 static bool has_player_card(const generic_liste_t *cards, rang_t r)
 {
@@ -62,8 +78,11 @@ static bool
 does_human_player_take_card_first_turn(const player_t *player,
                                        const carte_t *card)
 {
-    printf("It is your turn to speak. Here are yours cards: \n");
-    display_player_cards(player);
+    char players_cards_str[PLAYER_CARDS_FMT_SIZE];
+
+    get_player_cards_str(player, players_cards_str);
+    printf("It is your turn to speak. Here are yours cards: %s\n",
+           players_cards_str);
 
     printf("\nDo you want to take the card '" CARD_FMT "' ? (y/n)\n",
            CARD_FMT_ARG(card));
@@ -121,8 +140,11 @@ does_human_player_take_card_second_turn(const player_t *player,
                                         const carte_t *card,
                                         couleur_t *trump_color)
 {
-    printf("It is your turn to speak. Here are yours cards: \n");
-    display_player_cards(player);
+    char players_cards_str[PLAYER_CARDS_FMT_SIZE];
+
+    get_player_cards_str(player, players_cards_str);
+    printf("It is your turn to speak. Here are yours cards: %s\n",
+           players_cards_str);
 
     printf("\nYou can chose the color of the trump (except the one of the "
            "card, as you refused this color on the first turn)\n"
@@ -215,11 +237,13 @@ should_player_take_with_color(const generic_liste_t *trump_cards,
 static bool does_virtual_player_take_card_first_turn(const player_t *player,
                                                      const carte_t *card)
 {
+    char players_cards_str[PLAYER_CARDS_FMT_SIZE];
     int trump_color_pts, total_pts, trump_card_pt;
     const generic_liste_t *trump_cards = &(player->cards[card->c]);
 
-    logger_trace("player %d has these cards: ", player->idx);
-    display_player_cards(player);
+    get_player_cards_str(player, players_cards_str);
+    logger_trace("player %d has these cards: %s",
+                 player->idx, players_cards_str);
 
     if (card->r == VALET || trump_cards->nbre_elem == 5) {
         return true;
@@ -248,12 +272,14 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
                                                       const carte_t *card,
                                                       couleur_t *trump_color)
 {
+    char players_cards_str[PLAYER_CARDS_FMT_SIZE];
     int total_pts_best_color = 0;
     int trump_color_pts_best_color = 0;
     int best_color = -1;
 
-    logger_trace("player %d has these cards: ", player->idx);
-    display_player_cards(player);
+    get_player_cards_str(player, players_cards_str);
+    logger_trace("player %d has these cards: %s",
+                 player->idx, players_cards_str);
 
     for (unsigned int i = CARREAU; i <= TREFLE; i++) {
         bool is_color_ok;
