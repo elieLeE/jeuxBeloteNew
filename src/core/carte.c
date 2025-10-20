@@ -19,9 +19,8 @@ int cmp_card(const void *_c1, const void *_c2)
              * position but it will be almost the same than 'get_value_card'.
              * The only issue with this method in this context is there is a
              * case where we can not differentiate the two trump cards from
-             * theirs values: when one is the 7 and the other the 8.
-             * Just test which one is the 7 when the two cards have the same
-             * values */
+             * theirs values. But we can just return the difference of theirs
+             * rank as they have 7 or 8 as value. */
             int c1_val, c2_val;
 
             c1_val = get_value_card(c1, c1->c);
@@ -30,10 +29,7 @@ int cmp_card(const void *_c1, const void *_c2)
             if (c1_val != c2_val) {
                 return c1_val - c2_val;
             }
-            if (c1->r == SEPT) {
-                return -1;
-            }
-            return 1;
+            return c1->r - c2->r;
         }
         return 1;
     } else if (c2->is_trump) {
