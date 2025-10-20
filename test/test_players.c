@@ -199,6 +199,16 @@ static void test_does_virtual_player_take_card_first_turn(void)
     check_virtual_player_choice_first_turn(&player, NEUF, CARREAU, false,
                                            "First turn, valet and 9");
     free_player_cards_(&player);
+
+    /* Valet, 9 and that's it 2 => should not be taken */
+    create_card_and_add_to_player(&player, VALET, CARREAU);
+    create_card_and_add_to_player(&player, ROI, COEUR);
+    create_card_and_add_to_player(&player, ROI, TREFLE);
+    create_card_and_add_to_player(&player, VALET, PIQUE);
+    create_card_and_add_to_player(&player, DAME, TREFLE);
+    check_virtual_player_choice_first_turn(&player, NEUF, CARREAU, false,
+                                           "First turn, valet and 9 2");
+    free_player_cards_(&player);
 }
 
 /* }}} */

@@ -45,8 +45,12 @@ get_sum_points_list_card(const generic_liste_t *cards, couleur_t trump_color)
         }
     }
 
-    if (belote_and_re == 2) {
-        sum += 20;
+    if ((belote_and_re == 2) && !gl_is_empty(cards)) {
+        carte_t *c = (carte_t *)(cards->first->data);
+
+        if (c->c == trump_color) {
+            sum += 20;
+        }
     }
     return sum;
 }
