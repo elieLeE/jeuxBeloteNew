@@ -3,10 +3,15 @@
 #include "../../libC/src/liste/liste.h"
 #include "../../libC/src/io/io.h"
 #include "../../libC/src/str/str.h"
+#include "../../libC/libc.h"
 
 #include "players.h"
 #include "carte.h"
 #include "../front/aff.h"
+
+__attr_unused__
+static void remove_elem_card_from_player(player_t *player, gl_elem_t *elem,
+                                         couleur_t color);
 
 void
 get_player_cards_str(const player_t *player, char out[PLAYER_CARDS_FMT_SIZE])
@@ -446,6 +451,12 @@ void add_card_to_player(player_t *player, carte_t *card)
 
     list_cards = &(player->cards[card->c]);
     gl_add_elem_sorted(list_cards, card, cmp_card_descending_order);
+}
+
+static void remove_elem_card_from_player(player_t *player, gl_elem_t *elem,
+                                         couleur_t color)
+{
+    gl_remove_elem(&(player->cards[color]), elem, NULL);
 }
 
 void free_player_cards(player_t *player)
