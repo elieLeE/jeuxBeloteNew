@@ -3,6 +3,7 @@
 #include "../../libC/src/liste/liste.h"
 #include "../../libC/src/io/io.h"
 #include "../../libC/src/str/str.h"
+#include "../../libC/src/macros.h"
 #include "../../libC/libc.h"
 
 #include "players.h"
@@ -375,6 +376,71 @@ does_player_take_card_second_turn(const player_t *player, const carte_t *card,
 
 /* }}} */
 /* {{{ Play a card */
+
+static int get_all_cards_of_color(player_t *player, couleur_t card_color,
+                                  gl_elem_t *out[NBRE_CARTES_BY_PLAYER],
+                                  int first_idx)
+{
+    int idx = first_idx;
+    const generic_liste_t *cards_list = &(player->cards[card_color]);
+
+    gl_for_each(elem, cards_list->first) {
+        logger_trace("getting card " CARD_FMT,
+                     CARD_FMT_ARG(((carte_t *)elem->data)));
+
+        ASSERT(idx < NBRE_CARTES_BY_PLAYER, "idx: %d", idx);
+
+        out[idx] = elem;
+
+        idx++;
+    }
+
+    return (idx - first_idx);
+}
+
+__attr_unused__
+static int
+get_all_possible_cards(player_t *player, couleur_t asked_color,
+                       couleur_t trump_color, int idx_leading_player,
+                       gl_elem_t *out[NBRE_CARTES_BY_PLAYER])
+{
+    int count_possible_cards = 0;
+
+    if (!gl_is_empty(&(player->cards[asked_color]))) {
+        return get_all_cards_of_color(player, asked_color, out, 0);
+    } else {
+        logger_trace("player has not card of the asked color (%s)",
+                     name_coul(asked_color));
+    }
+
+    if (!gl_is_empty(&(player->cards[trump_color]))) {
+        count_possible_cards =
+            get_all_cards_of_color(player, trump_color, out, 0);
+
+        if (player->idx != (idx_leading_player + 2) % NBRE_JOUEURS) {
+            logger_trace("teammate is no master - player has to play a trump "
+                         "card (as it has at least one)");
+            return count_possible_cards;
+        }
+    } else {
+        logger_trace("player has not trump color (%s) card",
+                     name_coul(trump_color));
+    }
+
+    for (couleur_t i = CARREAU; i <= TREFLE; i++) {
+        if (i != asked_color && i != trump_color) {
+            int count = get_all_cards_of_color(player, i, out,
+                                               count_possible_cards);
+            count_possible_cards += count;
+
+            logger_trace("%d cards on color %s, %d cards at total",
+                         count, name_coul(i), count_possible_cards);
+        }
+    }
+
+    return count_possible_cards;
+}
+
 /* {{{ Human player */
 
 const carte_t *
