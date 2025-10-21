@@ -162,16 +162,19 @@ typedef struct trick_t {
 static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
                           couleur_t trump_color, trick_t *out)
 {
-    int idx_player = idx_first_player;
+    int idx_player;
     int idx_master_player = idx_first_player;
-    int player_counter = 0;
+    int player_counter = 1;
     const carte_t *master_card = NULL;
     const carte_t *first_card = NULL;
 
     first_card = master_card =
         RETHROW_PN(take_first_card_from_player(&(players[idx_first_player]),
                                                trump_color));
-    idx_first_player = GET_NEXT_PLAYER_IDX(idx_first_player);
+    out->cards[player_counter] = first_card;
+
+
+    idx_player = GET_NEXT_PLAYER_IDX(idx_first_player);
 
     do {
         const carte_t *opponent_card;
@@ -194,7 +197,7 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
 
     out->idx_player_won = idx_master_player;
 
-    return 0;
+    return idx_master_player;
 }
 
 static int get_all_tricks(player_t players[NBRE_JOUEURS], int idx_first_player,
