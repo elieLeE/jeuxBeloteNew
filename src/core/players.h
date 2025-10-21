@@ -8,6 +8,8 @@
 #include "carte.h"
 #include "../macros.h"
 
+#define PLAYER_CARDS_FMT_SIZE 200
+
 typedef struct player_t {
     int idx;
     /* XXX: it could have been possible to use arrays here. But as the size
@@ -21,6 +23,9 @@ typedef struct player_t {
     generic_liste_t cards[NBRE_COUL];
     bool is_human;
 } player_t;
+
+void
+get_player_cards_str(const player_t *player, char out[PLAYER_CARDS_FMT_SIZE]);
 
 bool does_player_take_card_first_turn(const player_t *player,
                                       const carte_t *card);

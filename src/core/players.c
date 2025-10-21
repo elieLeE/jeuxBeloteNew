@@ -3,14 +3,11 @@
 #include "../../libC/src/liste/liste.h"
 #include "../../libC/src/io/io.h"
 #include "../../libC/src/str/str.h"
-#include "../../libC/libc.h"
 
 #include "players.h"
 #include "carte.h"
 
-#define PLAYER_CARDS_FMT_SIZE 200
-
-static void
+void
 get_player_cards_str(const player_t *player, char out[PLAYER_CARDS_FMT_SIZE])
 {
     int len = 0;
