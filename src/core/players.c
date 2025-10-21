@@ -381,7 +381,7 @@ take_first_card_from_human_player(player_t *player, couleur_t trump_color)
 
 const carte_t *
 take_card_from_human_player(player_t *player, couleur_t asked_color,
-                            couleur_t trump_color, int idx_player_master_card)
+                            couleur_t trump_color, int idx_leading_player)
 {
     logger_error("'take_card_from_human_player' NOT YET IMPLEMENTED");
     return NULL;
@@ -400,7 +400,7 @@ take_first_card_from_virtual_player(player_t *player, couleur_t trump_color)
 const carte_t *
 take_card_from_virtual_player(player_t *player, couleur_t asked_color,
                               couleur_t trump_color,
-                              int idx_player_master_card)
+                              int idx_leading_player)
 {
     logger_error("'take_card_from_virtual_player' NOT YET IMPLEMENTED");
     return NULL;
@@ -421,14 +421,14 @@ take_first_card_from_player(player_t *player, couleur_t trump_color)
 
 const carte_t *
 take_card_from_player(player_t *player, couleur_t asked_color,
-                      couleur_t trump_color, int idx_player_master_card)
+                      couleur_t trump_color, int idx_leading_player)
 {
     if (player->is_human) {
         return take_card_from_human_player(player, asked_color, trump_color,
-                                           idx_player_master_card);
+                                           idx_leading_player);
     } else {
         return take_card_from_virtual_player(player, asked_color, trump_color,
-                                             idx_player_master_card);
+                                             idx_leading_player);
     }
     return NULL;
 }
