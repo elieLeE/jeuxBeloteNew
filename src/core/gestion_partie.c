@@ -38,7 +38,9 @@ static void
 final_split_cards(carte_t game[], player_t players[NBRE_JOUEURS],
                   int idx_first_player, int idx_player_taking)
 {
-    int idx_card = 0;
+    /* The first card of the current cards will be given the player that has
+     * taken it */
+    int idx_card = 1;
     int idx_player = idx_first_player;
 
     add_card_to_player(&(players[idx_player_taking]), &game[0]);
