@@ -207,7 +207,7 @@ should_player_take_with_color(const generic_liste_t *trump_cards,
         if (trump_cards->nbre_elem >= 3) {
             carte_t *c = (carte_t *)trump_cards->first->data;
 
-            logger_trace("player has at least 3 cards, including the valet "
+            logger_debug("player has at least 3 cards, including the valet "
                          "on color %s - automatically accepted",
                          name_coul(c->c));
             return true;
@@ -217,7 +217,7 @@ should_player_take_with_color(const generic_liste_t *trump_cards,
     if (trump_color_pts >= 34 && total_pts >= 50) {
         carte_t *c = (carte_t *)trump_cards->first->data;
 
-        logger_trace("player has %d points on trump color %s and %d points "
+        logger_debug("player has %d points on trump color %s and %d points "
                      "on others colors - accepted",
                      trump_color_pts, name_coul(c->c), total_pts);
         return true;
@@ -253,7 +253,7 @@ static bool does_virtual_player_take_card_first_turn(const player_t *player,
     trump_color_pts += trump_card_pt;
     total_pts += trump_card_pt;
 
-    logger_trace("trump_color_pts: %d, total_pts: %d",
+    logger_debug("trump_color_pts: %d, total_pts: %d",
                 trump_color_pts, total_pts);
 
     return
@@ -313,7 +313,7 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
         get_player_cards_value(player, i, &trump_color_pts, &total_pts);
         total_pts += selecting_trump_card;
 
-        logger_trace("color %s, trump_color_pts: %d, total_pts: %d",
+        logger_debug("color %s, trump_color_pts: %d, total_pts: %d",
                      name_coul(i), trump_color_pts, total_pts);
 
         is_color_ok = should_player_take_with_color(&(player->cards[i]),
@@ -323,11 +323,11 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
             if ((total_pts - total_pts_best_color)  +
                 (trump_color_pts - trump_color_pts_best_color) > 0)
             {
-                logger_trace("color %s should be taken and is the best color "
+                logger_debug("color %s should be taken and is the best color "
                              "for now", name_coul(i));
                 best_color = i;
             } else {
-                logger_trace("color %s could be taken but not better than "
+                logger_debug("color %s could be taken but not better than "
                              "best color", name_coul(i));
             }
         } else {
