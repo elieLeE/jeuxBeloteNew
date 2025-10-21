@@ -207,7 +207,7 @@ should_player_take_with_color(const generic_liste_t *trump_cards,
         if (trump_cards->nbre_elem >= 3) {
             carte_t *c = (carte_t *)trump_cards->first->data;
 
-            logger_trace("Player has at least 3 cards, including the valet "
+            logger_trace("player has at least 3 cards, including the valet "
                          "on color %s - automatically accepted",
                          name_coul(c->c));
             return true;
@@ -217,7 +217,7 @@ should_player_take_with_color(const generic_liste_t *trump_cards,
     if (trump_color_pts >= 34 && total_pts >= 50) {
         carte_t *c = (carte_t *)trump_cards->first->data;
 
-        logger_trace("Player has %d points on trump color %s and %d points "
+        logger_trace("player has %d points on trump color %s and %d points "
                      "on others colors - accepted",
                      trump_color_pts, name_coul(c->c), total_pts);
         return true;
@@ -282,7 +282,7 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
         logger_trace("investigating with color %s for trump", name_coul(i));
 
         if (i == card->c) {
-            logger_trace("On second turn, color of visible card can not be "
+            logger_trace("on second turn, color of visible card can not be "
                          "selected: skip");
             continue;
         }
@@ -290,7 +290,7 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
         trump_cards = &(player->cards[i]);
 
         if (trump_cards->nbre_elem == 0) {
-            logger_trace("Player has no card on color %s - "
+            logger_trace("player has no card on color %s - "
                          "automatically rejected", name_coul(i));
             continue;
         }
@@ -298,7 +298,7 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
         if (trump_cards->nbre_elem == 5) {
             carte_t *c = (carte_t *)trump_cards->first->data;
 
-            logger_trace("Player has 5 cards on color %s - "
+            logger_trace("player has 5 cards on color %s - "
                          "automatically accepted", name_coul(c->c));
 
             *trump_color = i;
