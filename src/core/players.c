@@ -459,6 +459,46 @@ get_all_poss_cards_to_play_str(gl_elem_t * const cards[NBRE_CARTES_BY_PLAYER],
     }
 }
 
+
+__attr_unused__
+gl_elem_t *
+get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
+                                int elem_count, couleur_t trump_color,
+                                int idx_leading_player)
+{
+    char players_cards_str[PLAYER_CARDS_FMT_SIZE];
+    __attr_unused__ gl_elem_t *elem = NULL;
+
+    get_all_poss_cards_to_play_str(elem_cards, elem_count, players_cards_str);
+
+    printf("It is your turn to play.\n");
+    if (idx_leading_player == -1) {
+        printf("You are the first to speak on this turn.\n");
+    }
+    printf("The trump color is %s. Here are the cards that you can play on "
+           "this turn:\n%s\n", name_coul(trump_color), players_cards_str);
+    printf("To indicate the card you want to play, you have two choice:\n"
+           "- indicate the digit beside the card\n"
+           "- indicate the card (for example 'ROI DE TREFLE')\n");
+
+    do {
+        char answer[20];
+
+        if (read_n_carac_and_flush(19, stdin, answer) == -1) {
+            continue;
+        }
+        logger_trace("answer: %s", answer);
+
+        if (elem) {
+            break;
+        } else {
+            printf("wrong answer\n");
+        }
+    } while(true);
+
+    return elem;
+}
+
 const carte_t *
 take_first_card_from_human_player(player_t *player, couleur_t trump_color)
 {
