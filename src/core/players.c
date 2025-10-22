@@ -10,7 +10,6 @@
 #include "carte.h"
 #include "../front/aff.h"
 
-__attr_unused__
 static void remove_elem_card_from_player(player_t *player, gl_elem_t *elem,
                                          couleur_t color);
 
@@ -460,7 +459,6 @@ get_all_poss_cards_to_play_str(gl_elem_t * const cards[NBRE_CARTES_BY_PLAYER],
 }
 
 
-__attr_unused__
 gl_elem_t *
 get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
                                 int elem_count, couleur_t trump_color,
@@ -502,8 +500,24 @@ get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
 const carte_t *
 take_first_card_from_human_player(player_t *player, couleur_t trump_color)
 {
-    logger_error("'take_card_from_human_player' NOT YET IMPLEMENTED");
-    return NULL;
+    gl_elem_t *player_cards[NBRE_CARTES_BY_PLAYER] = {NULL};
+    int idx = 0;
+    const carte_t *card_to_play;
+    gl_elem_t *elem = NULL;
+
+    for (couleur_t i = CARREAU; i <= TREFLE; i++) {
+        gl_for_each(elem, player->cards[i].first) {
+            player_cards[idx] = elem;
+            idx++;
+        }
+    }
+
+    elem = get_elem_card_from_human_player(player_cards, idx, trump_color, -1);
+    card_to_play = elem->data;
+
+    remove_elem_card_from_player(player, elem, card_to_play->c);
+
+    return card_to_play;
 }
 
 const carte_t *
