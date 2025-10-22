@@ -176,23 +176,39 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
     const carte_t *master_card = NULL;
     const carte_t *first_card = NULL;
 
+    logger_trace("it is the turn of the player %d", idx_first_player);
+
     first_card = master_card =
-        RETHROW_PN(take_first_card_from_player(&(players[idx_first_player]),
-                                               trump_color));
+        take_first_card_from_player(&(players[idx_first_player]),
+                                               trump_color);
+    if (first_card == NULL) {
+        logger_fatal("the player %d has returned a card NULL",
+                     idx_first_player);
+    }
     out->cards[player_counter] = first_card;
 
+    logger_info("the player %d has played the card '" CARD_FMT "'",
+                idx_first_player, CARD_FMT_ARG(first_card));
 
     idx_player = GET_NEXT_PLAYER_IDX(idx_first_player);
 
     do {
         const carte_t *opponent_card;
 
-        opponent_card =
-            RETHROW_PN(take_card_from_player(&(players[idx_player]),
-                                             first_card->c, trump_color,
-                                             idx_master_player));
+        logger_trace("it is the turn of the player %d", idx_player);
+
+        opponent_card = take_card_from_player(&(players[idx_player]),
+                                              first_card->c, trump_color,
+                                              idx_master_player);
+        if (opponent_card == NULL) {
+            logger_fatal("the player %d has returned a card NULL", idx_player);
+        }
+        logger_info("the player %d has played the card '" CARD_FMT "'",
+                    idx_player, CARD_FMT_ARG(opponent_card));
 
         if (cmp_card(master_card, opponent_card) < 0) {
+            logger_debug("the card '" CARD_FMT "' takes the lead",
+                         CARD_FMT_ARG(opponent_card));
             master_card = opponent_card;
             idx_master_player = idx_player;
         }
@@ -202,6 +218,8 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
         player_counter++;
         idx_player = GET_NEXT_PLAYER_IDX(idx_player);
     } while (idx_player != idx_first_player);
+
+    logger_info("the player %d has won this trick", idx_master_player);
 
     out->idx_player_won = idx_master_player;
 
