@@ -697,8 +697,32 @@ take_card_from_human_player(player_t *player, couleur_t asked_color,
 const carte_t *
 take_first_card_from_virtual_player(player_t *player, couleur_t trump_color)
 {
-    logger_error("'take_card_from_virtual_player' NOT YET IMPLEMENTED");
-    return NULL;
+    carte_t *card_to_play = NULL;
+    gl_elem_t *elem = NULL;
+    char players_cards_str[PLAYER_CARDS_FMT_SIZE];
+
+    get_player_cards_str(player, players_cards_str);
+    logger_trace("getting the first card of this trick from the player %d.\n"
+                 "This player has these cards: %s",
+                 player->idx, players_cards_str);
+
+    /* For now, virtual player plays the first card it finds */
+    for (int i = 0; i <= NBRE_COUL; i++) {
+        if (!gl_is_empty(&(player->cards[i]))) {
+            elem = player->cards[i].first;
+            break;
+        }
+    }
+
+    if (elem == NULL) {
+        logger_fatal("no card have been found for the player %d",
+                     player->idx);
+    }
+
+    card_to_play = elem->data;
+    remove_elem_card_from_player(player, elem, card_to_play->c);
+
+    return card_to_play;
 }
 
 const carte_t *
