@@ -472,6 +472,102 @@ static int get_idx_from_string(const char *idx)
     return idx_parsed;
 }
 
+static int get_rank_from_str(const char *str, rang_t *rank_found)
+{
+    if (strlen(str) == 1) {
+        int card_digit = atoi(str);
+
+        switch (card_digit) {
+        case 7:
+            *rank_found = SEPT;
+            return 0;
+        case 8:
+            *rank_found = HUIT;
+            return 0;
+        case 9:
+            *rank_found = NEUF;
+            return 0;
+        }
+    }
+
+    if (strcmp(str, "AS") == 0) {
+        *rank_found = AS;
+        return 0;
+    }
+    if (strcmp(str, "DIX") == 0) {
+        *rank_found = DIX;
+        return 0;
+    }
+    if (strcmp(str, "ROI") == 0) {
+        *rank_found = ROI;
+        return 0;
+    }
+    if (strcmp(str, "DAME") == 0) {
+        *rank_found = DAME;
+        return 0;
+    }
+    if (strcmp(str, "VALET") == 0) {
+        *rank_found = VALET;
+        return 0;
+    }
+    if (strcmp(str, "NEUF") == 0) {
+        *rank_found = NEUF;
+        return 0;
+    }
+    if (strcmp(str, "HUIT") == 0) {
+        *rank_found = HUIT;
+        return 0;
+    }
+    if (strcmp(str, "SEPT") == 0) {
+        *rank_found = SEPT;
+        return 0;
+    }
+    return -1;
+}
+
+int parse_card_name(char *card_name, carte_t *out)
+{
+    char *str_token;
+    int part_idx = 1;
+
+    str_token = strtok(card_name, " ");
+    logger_trace("rank indicated by player: %s\n", str_token);
+    RETHROW(get_rank_from_str(str_token, &out->r));
+    logger_debug("rank parsed: %s\n", name_rang(out->r));
+
+    while(str_token != NULL) {
+        str_token = strtok(NULL, " ");
+
+        if (str_token == NULL) {
+            if (part_idx == 3) {
+                return 0;
+            }
+            return -1;
+        }
+
+        switch (part_idx) {
+        case 1:
+            if (strcmp(str_token, "DE") != 0) {
+                return -1;
+            }
+            break;
+
+        case 2:
+            logger_trace("color indicated by player: %s\n", str_token);
+            RETHROW(get_couleur_from_str(str_token, &out->c));
+            logger_debug("color parsed: %s\n", name_coul(out->c));
+            break;
+
+        default:
+            logger_warning("too many parts in the name of the card");
+            return -1;
+        }
+
+        part_idx++;
+    } while (str_token != NULL);
+
+    return -1;
+}
 
 gl_elem_t *
 get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
@@ -517,6 +613,21 @@ get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
                 continue;
             }
             elem = elem_cards[idx_parsed];
+        } else {
+            carte_t tmp;
+
+            upper_string(answer);
+            if (parse_card_name(answer, &tmp) == 0) {
+                tmp.is_trump = (tmp.c == trump_color);
+
+                for (int i = 0; i < elem_count; i++) {
+                    carte_t *c = elem_cards[i]->data;
+
+                    if (c->r == tmp.r && c->c == tmp.c) {
+                        elem = elem_cards[i];
+                    }
+                }
+            }
         }
 
         if (elem) {
