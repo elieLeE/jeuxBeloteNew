@@ -166,10 +166,22 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
 /* }}} */
 /* {{{ Round */
 
+typedef struct card_played_t {
+    const carte_t *card;
+    int idx_player;
+} card_played_t;
+
 typedef struct trick_t {
-    const carte_t *cards[NBRE_JOUEURS];
+    card_played_t cards[NBRE_JOUEURS];
     int idx_player_won;
 } trick_t;
+
+static void set_card_played_info(card_played_t *card_played,
+                                 const carte_t *card, int idx_player)
+{
+    card_played->card = card;
+    card_played->idx_player = idx_player;
+}
 
 static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
                           couleur_t trump_color, trick_t *out)
@@ -189,7 +201,7 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
         logger_fatal("the player %d has returned a card NULL",
                      idx_first_player);
     }
-    out->cards[player_counter] = first_card;
+    set_card_played_info(&out->cards[0], first_card, idx_first_player);
 
     logger_info("the player %d has played the card '" CARD_FMT "'",
                 idx_first_player, CARD_FMT_ARG(first_card));
@@ -217,7 +229,8 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
             idx_master_player = idx_player;
         }
 
-        out->cards[player_counter] = opponent_card;
+        set_card_played_info(&(out->cards[player_counter]), opponent_card,
+                             idx_player);
 
         player_counter++;
         idx_player = GET_NEXT_PLAYER_IDX(idx_player);
