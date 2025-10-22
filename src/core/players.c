@@ -6,6 +6,7 @@
 
 #include "players.h"
 #include "carte.h"
+#include "../front/aff.h"
 
 void
 get_player_cards_str(const player_t *player, char out[PLAYER_CARDS_FMT_SIZE])
@@ -75,11 +76,8 @@ static bool
 does_human_player_take_card_first_turn(const player_t *player,
                                        const carte_t *card)
 {
-    char players_cards_str[PLAYER_CARDS_FMT_SIZE];
-
-    get_player_cards_str(player, players_cards_str);
-    printf("It is your turn to speak. Here are yours cards: %s\n",
-           players_cards_str);
+    printf("It is your turn to speak. ");
+    display_player_cards("Yours cards are these ones: %s\n", player);
 
     printf("\nDo you want to take the card '" CARD_FMT "' ? (y/n)\n",
            CARD_FMT_ARG(card));
@@ -137,11 +135,8 @@ does_human_player_take_card_second_turn(const player_t *player,
                                         const carte_t *card,
                                         couleur_t *trump_color)
 {
-    char players_cards_str[PLAYER_CARDS_FMT_SIZE];
-
-    get_player_cards_str(player, players_cards_str);
-    printf("It is your turn to speak. Here are yours cards: %s\n",
-           players_cards_str);
+    printf("It is your turn to speak. ");
+    display_player_cards("Yours cards are these ones: %s\n", player);
 
     printf("\nYou can chose the color of the trump (except the one of the "
            "card, as you refused this color on the first turn)\n"
