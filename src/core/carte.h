@@ -34,7 +34,7 @@ typedef struct carte_t {
 
 inline static const char* name_rang(rang_t r)
 {
-    static const char* name[NBRE_CARTES_BY_COUL] = {
+    static const char* name[8] = {
         "SEPT", "HUIT", "NEUF", "VALET", "DAME", "ROI", "DIX", "AS"};
 
     if ( r>= SEPT && r <= AS) {
