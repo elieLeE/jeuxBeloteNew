@@ -458,6 +458,20 @@ get_all_poss_cards_to_play_str(gl_elem_t * const cards[NBRE_CARTES_BY_PLAYER],
     }
 }
 
+static int get_idx_from_string(const char *idx)
+{
+    int idx_parsed;
+    char *end;
+
+    if ((idx_parsed = strtol(idx, &end, 10)) == 0) {
+        if (idx != end) {
+            idx_parsed = 0;
+        }
+    }
+
+    return idx_parsed;
+}
+
 
 gl_elem_t *
 get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
@@ -465,7 +479,7 @@ get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
                                 int idx_leading_player)
 {
     char players_cards_str[PLAYER_CARDS_FMT_SIZE];
-    __attr_unused__ gl_elem_t *elem = NULL;
+    gl_elem_t *elem = NULL;
 
     get_all_poss_cards_to_play_str(elem_cards, elem_count, players_cards_str);
 
@@ -481,11 +495,29 @@ get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
 
     do {
         char answer[20];
+        int len;
 
         if (read_n_carac_and_flush(19, stdin, answer) == -1) {
             continue;
         }
         logger_trace("answer: %s", answer);
+
+        len = strlen(answer);
+        if (len == 1) {
+            int idx_parsed = get_idx_from_string(answer);
+
+            /* idx printed in the console starts from 1
+             * (cf 'get_all_poss_cards_to_play_str') */
+            idx_parsed--;
+            if (idx_parsed < 0) {
+                printf("idx got (%s) is too short", answer);
+                continue;
+            } else if (idx_parsed > elem_count) {
+                printf("idx got (%s) is too big", answer);
+                continue;
+            }
+            elem = elem_cards[idx_parsed];
+        }
 
         if (elem) {
             break;
