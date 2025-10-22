@@ -599,7 +599,12 @@ get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
         logger_trace("answer: %s", answer);
 
         len = strlen(answer);
-        if (len == 1) {
+        if (len == 0) {
+            if (elem_count == 1) {
+                logger_trace("only one card possible to play - take it");
+                elem = elem_cards[0];
+            }
+        } else if (len == 1) {
             int idx_parsed = get_idx_from_string(answer);
 
             /* idx printed in the console starts from 1
