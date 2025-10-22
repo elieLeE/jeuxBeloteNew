@@ -443,6 +443,22 @@ get_all_possible_cards(player_t *player, couleur_t asked_color,
 
 /* {{{ Human player */
 
+__attr_unused__
+static void
+get_all_poss_cards_to_play_str(gl_elem_t * const cards[NBRE_CARTES_BY_PLAYER],
+                               int nber_cards,
+                               char out[PLAYER_CARDS_FMT_SIZE])
+{
+    int len = 0;
+
+    for (int i = 0; i < nber_cards; i++) {
+        carte_t *c = cards[i]->data;
+
+        len += snprintf(out + len, PLAYER_CARDS_FMT_SIZE - len,
+                        CARD_FMT " (%d), ", CARD_FMT_ARG(c), i + 1);
+    }
+}
+
 const carte_t *
 take_first_card_from_human_player(player_t *player, couleur_t trump_color)
 {
