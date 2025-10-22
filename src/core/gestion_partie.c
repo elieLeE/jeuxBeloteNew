@@ -10,6 +10,7 @@
 #include "gestion_partie.h"
 #include "gestion_jeu_carte.h"
 #include "players.h"
+#include "../front/aff.h"
 
 #define GET_NEXT_PLAYER_IDX(_idx_player)                                      \
     (_idx_player + 1) % NBRE_JOUEURS;
@@ -147,8 +148,11 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
                       *idx_player_taking);
 
     logger_info("all the cards have been well split");
+    display_player_cards("Yours cards are these ones: ", &(players[0]));
 
-    for (int i = 0; i < NBRE_JOUEURS; i++) {
+    /* human player is always the first one. His cards always are
+     * displayed just above => start at the index 1. */
+    for (int i = 1; i < NBRE_JOUEURS; i++) {
         char players_cards_str[PLAYER_CARDS_FMT_SIZE];
 
         get_player_cards_str(&players[i], players_cards_str);
