@@ -730,8 +730,30 @@ take_card_from_virtual_player(player_t *player, couleur_t asked_color,
                               couleur_t trump_color,
                               int idx_leading_player)
 {
-    logger_error("'take_card_from_virtual_player' NOT YET IMPLEMENTED");
-    return NULL;
+    char players_cards_str[PLAYER_CARDS_FMT_SIZE];
+    carte_t *card_to_play;
+    gl_elem_t *elem_cards[NBRE_CARTES_BY_PLAYER] = {NULL};
+    gl_elem_t *elem;
+    int count_cards;
+
+    get_player_cards_str(player, players_cards_str);
+    logger_trace("getting the next card of this trick from the player %d.\n"
+                 "This player has these cards: %s",
+                 player->idx, players_cards_str);
+
+    /* For now, virtual player plays the first possible card it finds */
+    count_cards = get_all_possible_cards(player, asked_color, trump_color,
+                                         idx_leading_player, elem_cards);
+
+    if (count_cards == 0) {
+        logger_fatal("no cards have been found for player %d", player->idx);
+    }
+
+    elem = elem_cards[0];
+    card_to_play = elem->data;
+    remove_elem_card_from_player(player, elem, card_to_play->c);
+
+    return card_to_play;
 }
 
 /* }}} */
