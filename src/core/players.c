@@ -397,7 +397,6 @@ static int get_all_cards_of_color(player_t *player, couleur_t card_color,
     return (idx - first_idx);
 }
 
-__attr_unused__
 static int
 get_all_possible_cards(player_t *player, couleur_t asked_color,
                        couleur_t trump_color, int idx_leading_player,
@@ -672,8 +671,24 @@ const carte_t *
 take_card_from_human_player(player_t *player, couleur_t asked_color,
                             couleur_t trump_color, int idx_leading_player)
 {
-    logger_error("'take_card_from_human_player' NOT YET IMPLEMENTED");
-    return NULL;
+    gl_elem_t *elem_cards[NBRE_CARTES_BY_PLAYER] = {NULL};
+    int count_cards;
+    gl_elem_t *elem = NULL;
+    const carte_t *card_to_play;
+
+    count_cards = get_all_possible_cards(player, asked_color, trump_color,
+                                         idx_leading_player, elem_cards);
+
+    if (count_cards == 0) {
+        logger_fatal("no cards have been found for player %d", player->idx);
+    }
+    elem = get_elem_card_from_human_player(elem_cards, count_cards,
+                                           trump_color, idx_leading_player);
+    card_to_play = elem->data;
+
+    remove_elem_card_from_player(player, elem, card_to_play->c);
+
+    return card_to_play;
 }
 
 /* }}} */
