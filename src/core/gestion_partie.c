@@ -148,6 +148,14 @@ all_split_cards(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
 
     logger_info("all the cards have been well split");
 
+    for (int i = 0; i < NBRE_JOUEURS; i++) {
+        char players_cards_str[PLAYER_CARDS_FMT_SIZE];
+
+        get_player_cards_str(&players[i], players_cards_str);
+        logger_trace("player %d has these cards:\n%s\n",
+                     players[i].idx, players_cards_str);
+    }
+
     return 0;
 }
 
