@@ -82,7 +82,7 @@ does_human_player_take_card_first_turn(const player_t *player,
                                        const carte_t *card)
 {
     printf("It is your turn to speak. ");
-    display_player_cards("Yours cards are these ones: %s\n", player);
+    display_player_cards("Yours cards are these ones: ", player);
 
     printf("\nDo you want to take the card '" CARD_FMT "' ? (y/n)\n",
            CARD_FMT_ARG(card));
@@ -141,7 +141,7 @@ does_human_player_take_card_second_turn(const player_t *player,
                                         couleur_t *trump_color)
 {
     printf("It is your turn to speak. ");
-    display_player_cards("Yours cards are these ones: %s\n", player);
+    display_player_cards("Yours cards are these ones: ", player);
 
     printf("\nYou can chose the color of the trump (except the one of the "
            "card, as you refused this color on the first turn)\n"

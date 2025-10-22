@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "aff.h"
 #include "../core/players.h"
 
@@ -16,4 +18,8 @@ void display_player_cards(const char *txt, const player_t *player)
     get_player_cards_str(player, players_cards_str);
 
     printf("%s%s", txt, players_cards_str);
+
+    if (txt[strlen(txt) - 1] != '\n') {
+        printf("\n");
+    }
 }
