@@ -183,50 +183,72 @@ static void set_card_played_info(card_played_t *card_played,
     card_played->idx_player = idx_player;
 }
 
+static const carte_t *
+get_next_first_trick_card(player_t *player, couleur_t trump_color)
+{
+    const carte_t *card;
+
+    logger_trace("it is the turn of the player %d", player->idx);
+
+    card = take_first_card_from_player(player, trump_color);
+    if (!card) {
+        logger_fatal("the player %d has returned a card NULL", player->idx);
+    }
+
+    logger_info("the player %d has played the card '" CARD_FMT "'",
+                player->idx, CARD_FMT_ARG(card));
+
+    return card;
+}
+
+static const carte_t *
+get_next_trick_card(player_t *player,couleur_t asked_color,
+                    couleur_t trump_color, int idx_leading_player)
+{
+    const carte_t *card;
+
+    logger_trace("it is the turn of the player %d", player->idx);
+
+    card = take_card_from_player(player, asked_color, trump_color,
+                                 idx_leading_player);
+    if (!card) {
+        logger_fatal("the player %d has returned a card NULL", player->idx);
+    }
+
+    logger_info("the player %d has played the card '" CARD_FMT "'",
+                player->idx, CARD_FMT_ARG(card));
+
+    return card;
+}
+
 static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
                           couleur_t trump_color, trick_t *out)
 {
     int idx_player;
-    int idx_master_player = idx_first_player;
+    int idx_leading_player = idx_first_player;
     int player_counter = 1;
     const carte_t *master_card = NULL;
     const carte_t *first_card = NULL;
 
-    logger_trace("it is the turn of the player %d", idx_first_player);
-
     first_card = master_card =
-        take_first_card_from_player(&(players[idx_first_player]),
-                                               trump_color);
-    if (first_card == NULL) {
-        logger_fatal("the player %d has returned a card NULL",
-                     idx_first_player);
-    }
-    set_card_played_info(&out->cards[0], first_card, idx_first_player);
+        get_next_first_trick_card(&(players[idx_first_player]), trump_color);
 
-    logger_info("the player %d has played the card '" CARD_FMT "'",
-                idx_first_player, CARD_FMT_ARG(first_card));
+    set_card_played_info(&out->cards[0], first_card, idx_first_player);
 
     idx_player = GET_NEXT_PLAYER_IDX(idx_first_player);
 
     do {
         const carte_t *opponent_card;
 
-        logger_trace("it is the turn of the player %d", idx_player);
-
-        opponent_card = take_card_from_player(&(players[idx_player]),
-                                              first_card->c, trump_color,
-                                              idx_master_player);
-        if (opponent_card == NULL) {
-            logger_fatal("the player %d has returned a card NULL", idx_player);
-        }
-        logger_info("the player %d has played the card '" CARD_FMT "'",
-                    idx_player, CARD_FMT_ARG(opponent_card));
+        opponent_card =
+            get_next_trick_card(&(players[idx_player]), first_card->c,
+                                trump_color, idx_leading_player);
 
         if (cmp_card(master_card, opponent_card) < 0) {
             logger_debug("the card '" CARD_FMT "' takes the lead",
                          CARD_FMT_ARG(opponent_card));
             master_card = opponent_card;
-            idx_master_player = idx_player;
+            idx_leading_player = idx_player;
         }
 
         set_card_played_info(&(out->cards[player_counter]), opponent_card,
@@ -236,11 +258,11 @@ static int get_next_trick(player_t players[NBRE_JOUEURS], int idx_first_player,
         idx_player = GET_NEXT_PLAYER_IDX(idx_player);
     } while (idx_player != idx_first_player);
 
-    logger_info("the player %d has won this trick", idx_master_player);
+    logger_info("the player %d has won this trick", idx_leading_player);
 
-    out->idx_player_won = idx_master_player;
+    out->idx_player_won = idx_leading_player;
 
-    return idx_master_player;
+    return idx_leading_player;
 }
 
 static int get_all_tricks(player_t players[NBRE_JOUEURS], int idx_first_player,
