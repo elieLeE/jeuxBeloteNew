@@ -574,7 +574,6 @@ get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
                                 int idx_leading_player)
 {
     char players_cards_str[PLAYER_CARDS_FMT_SIZE];
-    gl_elem_t *elem = NULL;
 
     get_all_poss_cards_to_play_str(elem_cards, elem_count, players_cards_str);
 
@@ -601,7 +600,7 @@ get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
         if (len == 0) {
             if (elem_count == 1) {
                 logger_trace("only one card possible to play - take it");
-                elem = elem_cards[0];
+                return elem_cards[0];
             }
         } else if (len == 1) {
             int idx_parsed = get_idx_from_string(answer);
@@ -610,13 +609,13 @@ get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
              * (cf 'get_all_poss_cards_to_play_str') */
             idx_parsed--;
             if (idx_parsed < 0) {
-                printf("idx got (%s) is too short", answer);
+                printf("idx got (%s) is too short\n", answer);
                 continue;
             } else if (idx_parsed > elem_count) {
-                printf("idx got (%s) is too big", answer);
+                printf("idx got (%s) is too big\n", answer);
                 continue;
             }
-            elem = elem_cards[idx_parsed];
+            return elem_cards[idx_parsed];
         } else {
             carte_t tmp;
 
@@ -628,20 +627,19 @@ get_elem_card_from_human_player(gl_elem_t * elem_cards[NBRE_CARTES_BY_PLAYER],
                     carte_t *c = elem_cards[i]->data;
 
                     if (c->r == tmp.r && c->c == tmp.c) {
-                        elem = elem_cards[i];
+                        return elem_cards[i];
                     }
                 }
-            }
-        }
+                printf("no card have been found corresponding to the parsing "
+                       "text: '" CARD_FMT "'\n", CARD_FMT_ARG((&tmp)));
 
-        if (elem) {
-            break;
-        } else {
-            printf("wrong answer\n");
+            } else {
+                printf("parsing of the card name has failed\n");
+            }
         }
     } while(true);
 
-    return elem;
+    return NULL;
 }
 
 const carte_t *
