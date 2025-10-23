@@ -421,6 +421,8 @@ void start_new_game(carte_t game[])
 
     init_players(players);
 
+    first_player = rand() % NBRE_JOUEURS;
+
     start_new_ronud(game, players, 0, teams_pts);
 }
 
