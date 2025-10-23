@@ -276,6 +276,87 @@ static int get_all_tricks(player_t players[NBRE_JOUEURS], int idx_first_player,
     return 0;
 }
 
+#define GET_TEAM_INDEX(_player_idx)                                           \
+   _player_idx % NBER_TEAMS
+
+static int get_trick_pts(const trick_t *trick, couleur_t trump_color,
+                         int count_belote_and_re_teams[NBER_TEAMS])
+{
+    int sum = 0;
+
+    for (int i = 0; i < NBER_CARDS_BY_TRICK; i++) {
+        const card_played_t *c = &trick->cards[i];
+
+        sum += get_value_card(c->card, trump_color);
+
+        if (c->card->is_trump && (c->card->r == ROI || c->card->r == DAME)) {
+            int idx_team = GET_TEAM_INDEX(c->idx_player);
+
+            count_belote_and_re_teams[idx_team]++;
+        }
+    }
+
+    return sum;
+}
+
+static void add_last_trick_ten_pts(trick_t *last_trick, int out[NBER_TEAMS])
+{
+    int idx_team_won_trick = GET_TEAM_INDEX(last_trick->idx_player_won);
+
+    out[idx_team_won_trick] += 10;
+}
+
+static void
+get_round_teams_pts(trick_t tricks[NBER_TRICKS], couleur_t trump_color,
+                    int idx_player_taking, int out[NBER_TEAMS])
+{
+    /* TODO => handle case where the teams are the same number of points.
+     * In this case, the team that has not taken the card wins 81 points.
+     * The other 81 points will be won by the teams winning the next round.
+     */
+    int idx_team_taking = GET_TEAM_INDEX(idx_player_taking);
+    int idx_team_no_taking = GET_TEAM_INDEX((idx_player_taking + 1));
+    int count_belote_and_re_teams[NBER_TEAMS] = {0, 0};
+
+    for (int i = 0; i < NBER_TRICKS; i++) {
+        trick_t *trick = &tricks[i];
+        int idx_team = GET_TEAM_INDEX(trick->idx_player_won);
+
+        out[idx_team] +=
+            get_trick_pts(trick, trump_color, count_belote_and_re_teams);
+    }
+
+    add_last_trick_ten_pts(&tricks[NBER_TRICKS - 1], out);
+
+    if (count_belote_and_re_teams[0] == 2) {
+        out[0] += 20;
+        logger_info("team 0 has done 'belote and re'");
+    } else if (count_belote_and_re_teams[1] == 2) {
+        out[1] += 20;
+        logger_info("team 1 has done 'belote and re'");
+    }
+
+    logger_info("team 0 has won %d pts, team 1 has won %d pts",
+                out[0], out[1]);
+
+    if (out[idx_team_taking] < out[idx_team_no_taking]) {
+        out[idx_team_no_taking] = 162;
+        out[idx_team_taking] = 0;
+
+        if (count_belote_and_re_teams[0] == 2) {
+            out[0] += 20;
+        } else if (count_belote_and_re_teams[1] == 2) {
+            out[1] += 20;
+        }
+        logger_info("team %d has taken card but did not succeed its aim. "
+                    "The team %d wins 0, pts and the team %d wins 162 pts",
+                    idx_team_taking, idx_team_taking, idx_team_no_taking);
+    } else {
+        logger_info("team %d has taken the card and won this round",
+                    idx_team_taking);
+    }
+}
+
 /* handling a new round:
  * - split the cards (the determining of the trump is done inside)
  * - do the trick
@@ -283,7 +364,7 @@ static int get_all_tricks(player_t players[NBRE_JOUEURS], int idx_first_player,
  */
 static void
 start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
-                int idx_first_player)
+                int idx_first_player, int teams_pts[NBER_TEAMS])
 {
     int res;
     couleur_t trump_color = -1;
@@ -304,7 +385,8 @@ start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
         {
             logger_error("an error happened in 'get_all_tricks'");
         } else {
-            logger_error("COUNT POINTS WON BY TEAMS - NOT YET IMPLEMENTED");
+            get_round_teams_pts(tricks, trump_color, idx_player_taking,
+                                teams_pts);
         }
         reset_cards_trump_status(game);
     } else {
@@ -333,11 +415,13 @@ static void init_players(player_t players[NBRE_JOUEURS])
 
 void start_new_game(carte_t game[])
 {
+    int teams_pts[NBER_TEAMS] = {0, 0};
+
     player_t players[NBRE_JOUEURS];
 
     init_players(players);
 
-    start_new_ronud(game, players, 0);
+    start_new_ronud(game, players, 0, teams_pts);
 }
 
 /* }}} */

@@ -9,7 +9,9 @@
 #define NBRE_CARTES_BY_PLAYER 8
 
 #define NBRE_JOUEURS 4
+#define NBER_TEAMS 2
 
 #define NBER_TRICKS 8
+#define NBER_CARDS_BY_TRICK 4
 
 #endif
