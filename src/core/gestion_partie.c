@@ -415,15 +415,32 @@ static void init_players(player_t players[NBRE_JOUEURS])
 
 void start_new_game(carte_t game[])
 {
-    int teams_pts[NBER_TEAMS] = {0, 0};
-
+    const int game_won_pts = 500;
     player_t players[NBRE_JOUEURS];
+    int teams_pts[NBER_TEAMS] = {0, 0};
+    int first_player = 0, round_counter = 0;
 
     init_players(players);
 
     first_player = rand() % NBRE_JOUEURS;
 
-    start_new_ronud(game, players, 0, teams_pts);
+    do {
+        int round_pts[NBER_TEAMS] = {0, 0};
+
+        start_new_ronud(game, players, first_player, round_pts);
+
+        teams_pts[0] += round_pts[0];
+        teams_pts[1] += round_pts[1];
+
+        logger_info("end of the round #%d, team 1: %d, team 2: %d",
+                    round_counter, teams_pts[0], teams_pts[1]);
+
+        first_player = GET_NEXT_PLAYER_IDX(first_player);
+        round_counter++;
+    } while(teams_pts[0] < game_won_pts && teams_pts[1] < game_won_pts);
+
+    logger_info("end of this game. The team %d has won",
+                teams_pts[0] > teams_pts[1] ? 0 : 1 );
 }
 
 /* }}} */
