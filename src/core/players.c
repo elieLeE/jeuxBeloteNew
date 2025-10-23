@@ -530,9 +530,9 @@ int parse_card_name(char *card_name, carte_t *out)
     int part_idx = 1;
 
     str_token = strtok(card_name, " ");
-    logger_trace("rank indicated by player: %s\n", str_token);
+    logger_trace("rank indicated by player: %s", str_token);
     RETHROW(get_rank_from_str(str_token, &out->r));
-    logger_debug("rank parsed: %s\n", name_rang(out->r));
+    logger_debug("rank parsed: %s", name_rang(out->r));
 
     while(str_token != NULL) {
         str_token = strtok(NULL, " ");
@@ -552,9 +552,9 @@ int parse_card_name(char *card_name, carte_t *out)
             break;
 
         case 2:
-            logger_trace("color indicated by player: %s\n", str_token);
+            logger_trace("color indicated by player: %s", str_token);
             RETHROW(get_couleur_from_str(str_token, &out->c));
-            logger_debug("color parsed: %s\n", name_coul(out->c));
+            logger_debug("color parsed: %s", name_coul(out->c));
             break;
 
         default:
