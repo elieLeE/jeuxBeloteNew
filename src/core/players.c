@@ -799,7 +799,7 @@ void add_card_to_player(player_t *player, carte_t *card)
 static void remove_elem_card_from_player(player_t *player, gl_elem_t *elem,
                                          couleur_t color)
 {
-    gl_remove_elem(&(player->cards[color]), elem, NULL);
+    gl_remove_elem(&(player->cards[color]), elem);
 }
 
 void free_player_cards(player_t *player)
