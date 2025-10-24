@@ -788,6 +788,12 @@ static int cmp_card_descending_order(const void *c1, const void *c2)
     return - cmp_card(c1, c2);
 }
 
+void sort_player_trump_cards(player_t *player, couleur_t trump_color)
+{
+    gl_sort(&(player->cards[trump_color]), INSERTION_SORT,
+            cmp_card_descending_order);
+}
+
 void add_card_to_player(player_t *player, carte_t *card)
 {
     generic_liste_t *list_cards;

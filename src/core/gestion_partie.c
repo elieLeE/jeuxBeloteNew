@@ -357,6 +357,14 @@ get_round_teams_pts(trick_t tricks[NBER_TRICKS], couleur_t trump_color,
     }
 }
 
+static void sort_all_players_trump_cards(player_t players[NBRE_JOUEURS],
+                                         couleur_t trump_color)
+{
+    for (int i = 0; i < NBRE_JOUEURS; i++) {
+        sort_player_trump_cards(&(players[i]), trump_color);
+    }
+}
+
 /* handling a new round:
  * - split the cards (the determining of the trump is done inside)
  * - do the trick
@@ -381,6 +389,8 @@ start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
         p_clear(tricks, NBER_TRICKS);
 
         set_cards_trump_status(game, trump_color);
+        sort_all_players_trump_cards(players, trump_color);
+
         if (get_all_tricks(players, idx_first_player, trump_color, tricks) < 0)
         {
             logger_error("an error happened in 'get_all_tricks'");
@@ -388,6 +398,7 @@ start_new_ronud(carte_t game[NBRE_CARTES], player_t players[NBRE_JOUEURS],
             get_round_teams_pts(tricks, trump_color, idx_player_taking,
                                 teams_pts);
         }
+
         reset_cards_trump_status(game);
     } else {
         logger_info("none players has taken the card - "
