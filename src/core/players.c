@@ -51,7 +51,7 @@ get_sum_points_list_card(const generic_liste_t *cards, couleur_t trump_color)
     int belote_and_re = 0;
 
     gl_for_each(elem, cards->first) {
-        carte_t *c = (carte_t *)elem->data;
+        carte_t *c = elem->data;
         int card_pt;
 
         card_pt = get_value_card(c, trump_color);
@@ -65,7 +65,7 @@ get_sum_points_list_card(const generic_liste_t *cards, couleur_t trump_color)
     }
 
     if ((belote_and_re == 2) && !gl_is_empty(cards)) {
-        carte_t *c = (carte_t *)(cards->first->data);
+        carte_t *c = cards->first->data;
 
         if (c->c == trump_color) {
             sum += 20;
