@@ -200,31 +200,61 @@ get_player_cards_value(const player_t *player, couleur_t trump_color,
     }
 }
 
+#define FORCE_ACCEPT_COLOR 200
+
 static bool
-should_player_take_with_color(const generic_liste_t *trump_cards,
-                              int trump_color_pts, int total_pts)
+should_player_take_with_color(const player_t *player, const carte_t *card,
+                              couleur_t trump_color, int *trump_color_pts,
+                              int *total_pts)
 {
     bool has_valet;
+    int trump_card_pt;
+    const generic_liste_t *trump_cards = &(player->cards[trump_color]);
+
+    if (trump_cards->nbre_elem == 0) {
+        logger_trace("player has no card on color %s - "
+                     "automatically rejected", name_coul(trump_color));
+        return false;
+    }
+
+    if (trump_cards->nbre_elem == 5) {
+        /* force to accept this color */
+        *total_pts = FORCE_ACCEPT_COLOR;
+
+        logger_trace("player has 5 cards on color %s - "
+                     "automatically accepted", name_coul(trump_color));
+
+        return true;
+    }
 
     has_valet = has_player_card(trump_cards, VALET);
-
     if (has_valet) {
         if (trump_cards->nbre_elem >= 3) {
-            carte_t *c = (carte_t *)trump_cards->first->data;
+            /* force to accept this color */
+            *total_pts = FORCE_ACCEPT_COLOR;
 
             logger_debug("player has at least 3 cards, including the valet "
                          "on color %s - automatically accepted",
-                         name_coul(c->c));
+                         name_coul(trump_color));
             return true;
         }
     }
 
-    if (trump_color_pts >= 34 && total_pts >= 50) {
-        carte_t *c = (carte_t *)trump_cards->first->data;
+    trump_card_pt = get_value_card(card, trump_color);
+    logger_trace("card trump: " CARD_FMT ", %d",
+                 CARD_FMT_ARG(card), trump_card_pt);
 
+    get_player_cards_value(player, trump_color, trump_color_pts, total_pts);
+    *trump_color_pts += trump_card_pt;
+    *total_pts += trump_card_pt;
+
+    logger_debug("trump_color_pts: %d, total_pts: %d",
+                *trump_color_pts, *total_pts);
+
+    if ((*trump_color_pts) >= 34 && (*total_pts) >= 50) {
         logger_debug("player has %d points on trump color %s and %d points "
                      "on others colors - accepted",
-                     trump_color_pts, name_coul(c->c), total_pts);
+                     *trump_color_pts, name_coul(trump_color), *total_pts);
         return true;
     }
 
@@ -235,34 +265,18 @@ static bool does_virtual_player_take_card_first_turn(const player_t *player,
                                                      const carte_t *card)
 {
     char players_cards_str[PLAYER_CARDS_FMT_SIZE];
-    int trump_color_pts, total_pts, trump_card_pt;
-    const generic_liste_t *trump_cards = &(player->cards[card->c]);
+    int trump_color_pts, total_pts;
 
     get_player_cards_str(player, players_cards_str);
     logger_trace("player %d has these cards: %s",
                  player->idx, players_cards_str);
 
-    if (card->r == VALET || trump_cards->nbre_elem == 5) {
+    if (card->r == VALET) {
         return true;
     }
 
-    if (trump_cards->nbre_elem == 0) {
-        return false;
-    }
-
-    trump_card_pt = get_value_card(card, card->c);
-    logger_trace("card trump: " CARD_FMT ", %d",
-                 CARD_FMT_ARG(card), trump_card_pt);
-
-    get_player_cards_value(player, card->c, &trump_color_pts, &total_pts);
-    trump_color_pts += trump_card_pt;
-    total_pts += trump_card_pt;
-
-    logger_debug("trump_color_pts: %d, total_pts: %d",
-                trump_color_pts, total_pts);
-
-    return
-        should_player_take_with_color(trump_cards, trump_color_pts, total_pts);
+    return should_player_take_with_color(player, card, card->c,
+                                         &trump_color_pts, &total_pts);
 }
 
 static bool does_virtual_player_take_card_second_turn(const player_t *player,
@@ -278,11 +292,9 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
     logger_trace("player %d has these cards: %s",
                  player->idx, players_cards_str);
 
-    for (unsigned int i = CARREAU; i <= TREFLE; i++) {
+    for (couleur_t i = 0; i < NBRE_COUL; i++) {
         bool is_color_ok;
-        int trump_color_pts = 0;
-        int total_pts, selecting_trump_card;
-        const generic_liste_t *trump_cards;
+        int trump_color_pts = 0, total_pts = 0;
 
         logger_trace("investigating with color %s for trump", name_coul(i));
 
@@ -292,39 +304,14 @@ static bool does_virtual_player_take_card_second_turn(const player_t *player,
             continue;
         }
 
-        trump_cards = &(player->cards[i]);
-
-        if (trump_cards->nbre_elem == 0) {
-            logger_trace("player has no card on color %s - "
-                         "automatically rejected", name_coul(i));
-            continue;
-        }
-
-        if (trump_cards->nbre_elem == 5) {
-            carte_t *c = (carte_t *)trump_cards->first->data;
-
-            logger_trace("player has 5 cards on color %s - "
-                         "automatically accepted", name_coul(c->c));
-
-            *trump_color = i;
-
-            return true;
-        }
-
-        selecting_trump_card = get_value_card(card, i);
-        logger_trace("selecting trump card: " CARD_FMT ", %d",
-                     CARD_FMT_ARG(card), selecting_trump_card);
-
-        get_player_cards_value(player, i, &trump_color_pts, &total_pts);
-        total_pts += selecting_trump_card;
-
-        logger_debug("color %s, trump_color_pts: %d, total_pts: %d",
-                     name_coul(i), trump_color_pts, total_pts);
-
-        is_color_ok = should_player_take_with_color(&(player->cards[i]),
-                                                    trump_color_pts,
-                                                    total_pts);
+        is_color_ok = should_player_take_with_color(player, card, i,
+                                                    &trump_color_pts,
+                                                    &total_pts);
         if (is_color_ok) {
+            if (total_pts == FORCE_ACCEPT_COLOR) {
+                *trump_color = i;
+                return true;
+            }
             if ((total_pts - total_pts_best_color)  +
                 (trump_color_pts - trump_color_pts_best_color) > 0)
             {
