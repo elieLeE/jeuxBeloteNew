@@ -29,17 +29,17 @@ get_player_cards_str(const player_t *player, char out[PLAYER_CARDS_FMT_SIZE])
     }
 }
 
-static bool has_player_card(const generic_liste_t *cards, rang_t r)
+static bool has_player_card(const player_t *player, const carte_t *card)
 {
-    gl_for_each(elem, cards->first) {
-        carte_t *card = (carte_t *)(elem->data);
+    return gl_contains_data(&(player->cards[card->c]), card, cmp_card);
+}
 
-        if (card->r == r) {
-            return true;
-        }
-    }
+static bool
+has_player_card2(const player_t *player, rang_t r, couleur_t c, bool is_trump)
+{
+    carte_t tmp = {.r = r, .c = c, .is_trump = is_trump};
 
-    return false;
+    return has_player_card(player, &tmp);
 }
 
 /* return the number of points that a player has for a specific color,
@@ -227,7 +227,7 @@ should_player_take_with_color(const player_t *player, const carte_t *card,
         return true;
     }
 
-    has_valet = has_player_card(trump_cards, VALET);
+    has_valet = has_player_card2(player, VALET, trump_color, false);
     if (has_valet) {
         if (trump_cards->nbre_elem >= 3) {
             /* force to accept this color */
