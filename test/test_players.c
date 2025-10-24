@@ -294,7 +294,7 @@ static void test_does_virtual_player_take_card_second_turn(void)
     create_card_and_add_to_player(&player, AS, PIQUE);
     create_card_and_add_to_player(&player, DAME, TREFLE);
     create_card_and_add_to_player(&player, ROI, TREFLE);
-    check_virtual_player_choice_second_turn(&player, AS, CARREAU, false, -1,
+    check_virtual_player_choice_second_turn(&player, ROI, CARREAU, false, -1,
                                            "Turn 2, not big trump cards 2");
     free_player_cards_(&player);
 
